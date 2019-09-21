@@ -11,7 +11,6 @@
                 color:white;
                 font-family:sans-serif;
                 width:100%;
-
                 height:75px;
             }
 
@@ -23,7 +22,7 @@
                 width:40px;
                 height:10px;
             }
-            div>input{
+            form>div>input{
                 border-radius:12px;
                 border:solid 1px grey;
                 font-size:20px;
@@ -32,12 +31,12 @@
                 width:12cm;
                 height:1cm;
             }
-            div>span{
+            form>div>span{
                 position:relative;
                 left:10px;
 
             }
-            div >button{
+            form>div>button{
                 border-radius:12px;
                 margin-left:140px;
                 text-align:center;
@@ -54,24 +53,24 @@
         <header class="top">
              <span style="position:relative;top:10px;left:10px"><b>ExamSoft</b><prep>&nbsp;&nbsp; Rizvi College</span>
         </header>
+        <form id="Students">
+            <div style="margin-left:50%">
+                <span >Students zone</span>
+                <input type="text" placeholder="Name">
+                <input type="text" placeholder="Class">
+                <input type="text" placeholder="Roll Number">
+                <input type="text" placeholder="Subject">
+                <button type="submit"> Login</button>
+            </div>
+        </form>
 
-        <div style="margin-left:50%">
-            <span >Students zone</span>
-            <form id="students">
-            <input type="text" placeholder="Name">
-            <input type="text" placeholder="Class">
-            <input type="text" placeholder="Roll Number">
-            <input type="text" placeholder="Subject">
-            <button type="submit"> Login</button>
-            </form>
-        </div>
-        <div>
-            <form id="Professors">
-            <span>Professors zone</span>
-            <input type="text" placeholder="Username">
-            <input type="password" placeholder="Password">
-            <button type="submit">Login</button>
-            </form>
-        </div>
+        <form id="Professor">
+            <div>
+                <span>Professors zone</span>
+                    <input type="text" placeholder="Username">
+                    <input type="password" placeholder="Password">
+                    <button type="submit">Login</button>
+            </div>
+        </form>
         </body>
 </html>
