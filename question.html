@@ -37,7 +37,8 @@
             position: relative;
             margin-left: 36%;
             margin-top:0.5cm;
-            width:150px;
+            width:150px;d:
+            d
             height:40px;
             border-radius:4px;
             border:solid 1px grey;
@@ -62,7 +63,16 @@
                 </select>   
                 <br>
                 <span>Question paper code(6 digit)*</span><input type="text" pattern="[0-9]{6}" maxlength="6" style="margin-left: 17.5%"><br>
-                <span>Subject Name</span><input type="text" style="margin-left:30%"><br>
+                <span>Subject Name</span><input type="text" style="margin-left:30%" list="Subject"><br>
+                <datalist id="Subject">
+                    <option value="Theroy of Computation">
+                    <option value="Core JAVA">
+                    <option value="Operating System">
+                    <option value="Database Management Systems">
+                    <option value="Combinatorics and Graph Theory">
+                    <option value="Physical Computing and IoT Programming">
+                    <option value"Web Programming">       
+                </datalist>
                 <span>Total number of questions</span><input type="text" style="margin-left: 20.5%"><br>
                 <span>Total time in minute</span><input type="text"><br>
                 <button type="Submit">Create Exam</button>
