@@ -10,7 +10,7 @@
                 background-color:navy;
                 color:white;
                 font-family:sans-serif;
-                width:100%;
+                width:150%;
                 height:75px;
             }
             div{
@@ -55,6 +55,17 @@
                 width:6cm;
                 height:1.6cm;
         }
+        form>div>a{
+            position:fixed;
+            margin-top:2%;
+            margin-left:12.5%;
+            font-size:15px;
+            font-family:"arial";
+            text-decoration:none;
+        }
+        form>div>a:hover{
+            text-decoration:underline;
+        }
         </style>
     </head>
     <body>
@@ -77,19 +88,20 @@
                     <option value="1">4</option>
                     <option value="1">5</option>
                     <option value="1">6</option>
-                </select>   
+                </select>
                 <input type="text" placeholder="Full Name">
                 <input type="text" placeholder="Roll Number">
                 <input type="text" placeholder="Subject Code(6 digit)*" pattern="[0-9]{6}" maxlength="6">
                 <button type="submit"> Login</button>
             </div>
         </form>
-        <form id="Professor">
+        <form id="Professor" method="post">
             <div>
                 <span>Professors zone</span>
-                    <input type="text" placeholder="Username">
-                    <input type="password" placeholder="Password">
-                    <button type="submit">Login</button>
+                <input type="text" placeholder="Email address">
+                <input type="password" placeholder="Password">
+                <button type="submit">Login</button>
+                <a href="{{url_for('static', filename='CreateAccount.html')}}"><small>Create account</small></a>
             </div>
         </form>
     </body>
