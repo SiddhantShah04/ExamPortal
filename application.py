@@ -1,7 +1,6 @@
 from flask import Flask,render_template,request,redirect,url_for
 import sqlite3 as db
 
-#cur.execute('create table Registration(Email varchar(225),Password varchar(50))')
 app = Flask(__name__)
 @app.route("/")
 def index():
@@ -20,6 +19,22 @@ def Registration():
     else:
         return render_template("index.html")
 
+@app.route("/ProfessorZone",methods=["POST","GET"])
+def ProfessorZone():
+    if(request.method == "POST"):
+        Email = request.form.get("Email")
+        Password = request.form.get("Password")
 
+        con = db.connect('registration.db')
+        cur = con.cursor()
+        rows = cur.execute("select email from Registration")
+        E = rows.fetchall()
+        rows = cur.execute("select password from Registration")
+        P = rows.fetchall()
+        for i in range(len(E)):
+            if(E[i][0] == Email and P[i][0] == Password):
+                return redirect(url_for("ProfessorZone"))
 
-
+        return("<h1>invalid Email or password</h4>")
+    else:
+        return render_template("Professors.html")

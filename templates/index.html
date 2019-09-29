@@ -95,11 +95,11 @@
                 <button type="submit"> Login</button>
             </div>
         </form>
-        <form id="Professor" method="post">
+        <form action="/ProfessorZone" method="POST" name="Professor">
             <div>
                 <span>Professors zone</span>
-                <input type="text" placeholder="Email address">
-                <input type="password" placeholder="Password">
+                <input type="text" placeholder="Email address" name="Email" pattern="[.+@+.]">
+                <input type="password" placeholder="Password" name="Password">
                 <button type="submit">Login</button>
                 <a href="{{url_for('static', filename='CreateAccount.html')}}"><small>Create account</small></a>
             </div>
