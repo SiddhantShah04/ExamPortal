@@ -2,11 +2,10 @@
 <html>
     <head>
         <title>Professors Page</title>
-
         <script>
-
         </script>
     <style>
+
         div{
             position:absolute;
             margin-top:-1%;
@@ -18,7 +17,7 @@
             width:25%;
             height:750px;
         }
-        div>h6>a{
+        div>form>h6>a{
             Font-family:"Courier New";
             position:relative;
             top:20px;
@@ -28,16 +27,20 @@
             text-decoration:none;
         }
 
-        div>h6>a:hover{
+        div>form>h6>a:hover{
             text-decoration:underline;
         }
     </style>
 
     </head>
     <body>
+         {% block style %} {% endblock %}
+        {% block p %}  {% endblock %}
         <div>
             <span style="position:relative;top:45px;left:20px;"><b>Professor zone</b></span>
-            <h6><a href="Question.html">Create Paper</a></h6>
+            <form action="/Create_Question" method="GET" id="q">
+                <h6><a href="#" onclick="getElementById('q').submit()">Create Paper</a></h6>
+            </form>
         </div>
     </body>
 </html>

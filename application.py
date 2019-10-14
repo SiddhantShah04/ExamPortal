@@ -24,7 +24,6 @@ def ProfessorZone():
     if(request.method == "POST"):
         Email = request.form.get("Email")
         Password = request.form.get("Password")
-
         con = db.connect('registration.db')
         cur = con.cursor()
         rows = cur.execute("select email from Registration")
@@ -38,3 +37,7 @@ def ProfessorZone():
         return("<h1>invalid Email or password</h4>")
     else:
         return render_template("Professors.html")
+
+@app.route("/Create_Question",methods=["POST","GET"])
+def Create_Question():
+    return render_template("question.html")
