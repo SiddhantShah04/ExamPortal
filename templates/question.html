@@ -43,25 +43,24 @@
             border:solid 1px grey;
         }
     </style>
-        <form class="QPaper" >
+        <form class="QPaper" action="/Create_Paper" method="Post" name="reload">
             <div>
-
-                <span>Branch</span><select>
+                <span>Branch</span><select name="Branch">
                     <option value="Cs">CS</option>
                     <option value="It">IT</option>
                 </select> <br>
-                <span>Semester</span><select style="margin-left:33%">
+                <span>Semester</span><select name="Sem" style="margin-left:33%" >
                     <option value="1">1</option>
-                    <option value="1">2</option>
-                    <option value="1">3</option>
-                    <option value="1">4</option>
-                    <option value="1">5</option>
-                    <option value="1">6</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
                 </select>
                 <br>
-                <span>Question paper code(6 digit)*</span><input type="text" pattern="[0-9]{6}" maxlength="6" style="margin-left: 9%"><br>
-                <span>Subject Name</span><input type="text" style="margin-left:27.3%" list="Subject"><br>
-                <datalist id="Subject">
+                <span>Question paper code(6 digit)*</span><input type="text" pattern="[0-9]{6}" maxlength="6" style="margin-left: 9%" name="QuestionPaperCode"><br>
+                <span>Subject Name</span><input type="text" style="margin-left:27.3%" list="Subject" name="SubjectName"><br>
+                <datalist id="Subject" >
                     <option value="Theroy of Computation">
                     <option value="Core JAVA">
                     <option value="Operating System">
@@ -70,7 +69,8 @@
                     <option value="Physical Computing and IoT Programming">
                     <option value="Web Programming">
                 </datalist>
-                <span>Total number of questions</span><input type="text" style="margin-left:13%"><br>
+                <span>Total number of questions</span><input type="text" name="NumberOfQuestions" style="margin-left:13%"><br>
+                <span>Marks per questions</span><input type="text" name="Marks" style="margin-left:20%;" ><br>
                 <button type="Submit">Create Exam</button>
             </div>
         </form>

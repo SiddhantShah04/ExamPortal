@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Create Question Paper</title>
+        <style>
+            .showoff{
+                position:relative;
+                text-align:center;
+                margin-top:-1%;
+                font-family:Cambria;
+                font-size:40px;
+                color:white;
+                margin-bottom:10px;
+                background-color:navy;
+            }
+            .Question>input{
+                position: relative;
+                margin-top: 0.5cm;
+                margin-left:23px;
+                border-radius: 5px;
+                border: solid 1px gray;
+                width: 31.5cm;
+                height: 1cm;
+                font-size: 20px;
+            }
+            .options>input{
+                position:relative;
+                margin-top:25px;
+                margin-left: 1px;
+                border-radius: 2px;
+                border: solid 1px gray;
+                width: 7cm;
+                height: 1cm;
+                font-size: 20px;
+                border-radius: 5px;
+            }
+            .options>span{
+
+                margin-left:10px;
+                font-size: 25px;
+                font-family:Cambria;
+            }
+            .Question>span{
+                margin-left:1px;
+            }
+            fieldset{
+                margin-top:10px;
+                margin-left: 1cm;
+                font-size: 20px;
+                font-family:Cambria;
+            }
+            .PaperDetails>span{
+
+                Position:relative;
+                padding-top:1cm;
+                margin-left:40px;
+
+                border-top:100px;
+                font-size: 20px;
+                font-family:Cambria;
+                word-spacing:40px;
+            }
+            .button{
+
+                border-radius:8px;
+                border:0px;
+                width:150px;
+                height:40px;
+                font-size:18px;
+                text-align:center;
+                margin-left:44%;
+                color:white;
+                background-color:green;
+                margin-top:2%;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="showoff"> Rizvi college Paper Creation zone</div>
+
+        <div class="PaperDetails">
+            <span> Branch:{{Branch}} Sem:{{Sem}} <span style="word-spacing:0px;">Subject:{{SubjectName}}</span> TotalQuestion:{{NumberOfQuestion}} QuestionPaperCode:{{QuestionPaperCode}} MarksPerQuestion:{{Marks}}</span>
+           <!-- {{Branch}} {{Sem}} {{QRC}} {{SubjectName}} -->
+        </div>
+        {% for i in range (1,(NumberOfQuestion+1)) %}
+        <form method="POST" action="">
+        <fieldset>
+        <legend>Question {{i}}</legend>
+        <label><div class="Question">
+            <input type="text" placeholder="Enter the Question here">
+        </div></label>
+
+        <label><div class="options">
+            <span>a.</span>
+            <input type="text" placeholder="Option1">
+            <span>b.</span><input type="text" placeholder="Option2">
+            <span>c.</span><input type="text" placeholder="Option3">
+            <span>d.</span><input type="text" placeholder="Option4">
+            <input type="text" placeholder="Answer" style="margin-left:6.5cm;margin-top:1cm;">
+            <input type="text" placeholder="Time in seconds" style="margin-left:6cm;" >
+        </div></label>
+    </fieldset>
+    {%- endfor -%}
+        <button type="Submit" class="button">Submit</button>
+    </form>
+    </body>
+</html>

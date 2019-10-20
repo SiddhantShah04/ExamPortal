@@ -41,3 +41,16 @@ def ProfessorZone():
 @app.route("/Create_Question",methods=["POST","GET"])
 def Create_Question():
     return render_template("question.html")
+
+@app.route("/Create_Paper",methods=["POST","GET"])
+def Create_Paper():
+    Branch = request.form.get("Branch")
+    Sem = request.form.get("Sem")
+
+    NumberOfQuestion = int(request.form.get("NumberOfQuestions"))
+    Marks = request.form.get("Marks")
+    SubjectName  = request.form.get("SubjectName")
+    QuestionPaperCode = request.form.get("QuestionPaperCode")
+    return render_template("Paper.html",Branch=Branch,Sem=Sem,NumberOfQuestion=NumberOfQuestion,Marks=Marks,QuestionPaperCode=QuestionPaperCode,SubjectName=SubjectName)
+
+
