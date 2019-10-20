@@ -39,30 +39,21 @@ def ProfessorZone():
 
         return("<h1>invalid Email or password</h4>")
     else:
-        return render_template("Professors.html")()
+        return render_template("Professors.html")
 
 
 
 @app.route('/Email/<string:Email>')
 def Email(Email):
-
     return render_template("Professors.html",Email=Email)
 
+@app.route("/Create_Question/<string:Email>",methods=["POST","GET"])
+def Create_Question(Email):
 
+    return render_template("question.html",Email=Email)
 
-@app.route("/Create_Question",methods=["POST","GET"])
-def Create_Question():
-
-    return render_template("question.html")
-
-
-
-
-
-
-@app.route("/Create_Paper",methods=["POST","GET"])
-def Create_Paper():
-    Email = request.form.get("Email")
+@app.route("/Create_Paper/<string:Email>",methods=["POST","GET"])
+def Create_Paper(Email):
     Branch = request.form.get("Branch")
     Sem = request.form.get("Sem")
     NumberOfQuestion = int(request.form.get("NumberOfQuestions"))
@@ -70,10 +61,8 @@ def Create_Paper():
     SubjectName  = request.form.get("SubjectName")
     QuestionPaperCode = request.form.get("QuestionPaperCode")
 
-
-
     try:
-        con = db.connect('.db')
+        con = db.connect(f'{Email}.db')
         cur = con.cursor()
         cur.execute('create table Paper (Branch charr(2),sem int(2),NumberofQuestion int(4),Marks int(5),SubjectName varchar(100),QuestionPaperCode int(6))')
     except:
