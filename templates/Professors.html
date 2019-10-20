@@ -7,7 +7,7 @@
     <style>
         .Professors{
             position:relative;
-            margin-top:-1%;
+            margin-top:-2%;
             margin-left:-0.6%;
             font-size:40px;
             background-color:brown;
@@ -28,12 +28,22 @@
         .Professors>form>h6>a:hover{
             text-decoration:underline;
         }
+        .Email{
+            text-align:right;
+
+            font-family:Cambria;
+        }
     </style>
     </head>
     <body>
+
         <div class="Professors">
+
             <span style="position:relative;top:45px;left:20px;"><b>Professor zone</b></span>
             <form action="/Create_Question" method="GET" id="q">
+                <div class="Email" >
+                <span name="Email"> User email:{{Email}} </span>
+            </div>
                 <h6><a onclick="getElementById('q').submit()">Create Paper</a></h6>
             </form>
         </div>

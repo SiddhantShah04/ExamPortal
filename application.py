@@ -11,6 +11,9 @@ def Registration():
     if(request.method == "POST"):
         email = request.form.get("EMAIL")
         password = request.form.get("PASSWORD")
+
+        if(email == ""  or  password == ""):
+            return("<h2>Are stupid or what</h2>?")
         con = db.connect('registration.db')
         cur = con.cursor()
         cur.execute('INSERT INTO Registration VALUES (?,?)',(email,password))
@@ -32,25 +35,51 @@ def ProfessorZone():
         P = rows.fetchall()
         for i in range(len(E)):
             if(E[i][0] == Email and P[i][0] == Password):
-                return redirect(url_for("ProfessorZone"))
+                return redirect(url_for('Email',Email=Email))
 
         return("<h1>invalid Email or password</h4>")
     else:
-        return render_template("Professors.html")
+        return render_template("Professors.html")()
+
+
+
+@app.route('/Email/<string:Email>')
+def Email(Email):
+
+    return render_template("Professors.html",Email=Email)
+
+
 
 @app.route("/Create_Question",methods=["POST","GET"])
 def Create_Question():
+
     return render_template("question.html")
+
+
+
+
+
 
 @app.route("/Create_Paper",methods=["POST","GET"])
 def Create_Paper():
+    Email = request.form.get("Email")
     Branch = request.form.get("Branch")
     Sem = request.form.get("Sem")
-
     NumberOfQuestion = int(request.form.get("NumberOfQuestions"))
     Marks = request.form.get("Marks")
     SubjectName  = request.form.get("SubjectName")
     QuestionPaperCode = request.form.get("QuestionPaperCode")
-    return render_template("Paper.html",Branch=Branch,Sem=Sem,NumberOfQuestion=NumberOfQuestion,Marks=Marks,QuestionPaperCode=QuestionPaperCode,SubjectName=SubjectName)
+
+
+
+    try:
+        con = db.connect('.db')
+        cur = con.cursor()
+        cur.execute('create table Paper (Branch charr(2),sem int(2),NumberofQuestion int(4),Marks int(5),SubjectName varchar(100),QuestionPaperCode int(6))')
+    except:
+        print()
+    cur.execute('insert into Paper values(?,?,?,?,?,?)',(Branch,Sem,NumberOfQuestion,Marks,SubjectName,QuestionPaperCode))
+    con.commit()
+    return render_template("Paper.html",Email=Email,Branch=Branch,Sem=Sem,NumberOfQuestion=NumberOfQuestion,Marks=Marks,QuestionPaperCode=QuestionPaperCode,SubjectName=SubjectName)
 
 
