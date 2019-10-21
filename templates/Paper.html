@@ -53,12 +53,12 @@
 
                 Position:relative;
                 padding-top:1cm;
-                margin-left:40px;
+                margin-left:36px;
 
                 border-top:100px;
                 font-size: 20px;
                 font-family:Cambria;
-                word-spacing:40px;
+                word-spacing:30px;
             }
             .button{
 
@@ -84,7 +84,8 @@
            <!-- {{Branch}} {{Sem}} {{QRC}} {{SubjectName}} -->
         </div>
         {% for i in range (1,(NumberOfQuestion+1)) %}
-        <form method="POST" action="">
+        <form action="/Email/{{Email}}" method="POST">
+
         <fieldset>
         <legend>Question {{i}}</legend>
         <label><div class="Question">
@@ -103,8 +104,6 @@
     </fieldset>
     {%- endfor -%}
         <button type="Submit" class="button">Submit</button>
-
-
     </form>
     </body>
 </html>
