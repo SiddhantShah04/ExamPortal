@@ -1,8 +1,16 @@
 <!doctype html>
 <html>
     <head>
+         <meta name="viewport" content="width = device-width , initial-scale=1.0">
         <title>Professors Page</title>
         <script>
+        function upload(){
+            let up = document.getElementById("upload");
+                up.style.display="block";
+            let onlinePaper = document.getElementById("onlinePaper");
+            onlinePaper.style.display = "none";
+        }
+
         </script>
     <style>
         .Professors{
@@ -13,8 +21,8 @@
             background-color:brown;
             color:white;
             font-family:Arial;
-            width:25%;
-            height:655px;
+            width:25vw;
+            height:100vh;
         }
         .Professors>h6>a{
             Font-family:"Courier New";
@@ -37,15 +45,44 @@
             text-decoration:underline;
 
         }
+        .upload{
+            position:absolute;
+            margin-top:10%;
+            margin-left:45%;
+
+        }
+        .submit{
+             border-radius:8px;
+            border:0px;
+            width:150px;
+            height:40px;
+            font-size:18px;
+            text-align:center;
+            margin-left:4.5%;
+            color:white;
+            background-color:green;
+            margin-top:13%;
+        }
+
     </style>
     </head>
-    <body>
+    <body style= "background:lightblue;">
+
+         <div style="display:none;" id="upload" class="upload">
+            <form  method = "POST" action = "/{{Email}}/uploader"  enctype = "multipart/form-data" >
+                <input type = "file" name = "file">
+                <input type = "submit" class="submit">
+            </form>
+        </div>
+
         <header class="logout" ><a href="/logout">Logout</a></header>
         <div class="Professors">
             <span style="position:relative;top:45px;left:20px;"><b>Professor zone</b></span>
-                <h6><a href="/{{Email}}/Create_Question">Create Paper</a></h6>
+                <h6><a href="/{{Email}}/Create_Question">Create Paper Online</a></h6>
+
+                <h6><a  onclick="upload()" style="cursor:pointer;">Upload a file</a></h6>
         </div>
-        <div>
+        <div id="onlinePaper">
             {% block p %} {% endblock %}
         </div>
 

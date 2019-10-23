@@ -33,7 +33,6 @@
             form>div>span{
                 position:relative;
                 left:10px;
-
             }
             form>div>button{
                 border-radius:12px;
@@ -89,9 +88,22 @@
                     <option value="5">5</option>
                     <option value="6">6</option>
                 </select>
+
+                <input type="text" style="margin-left:27.3%;overflow: scroll;" list="Subject" name="SubjectName" placeholder="Subject"><br>
+                <datalist id="Subject"style="overflow: scroll;">
+                    <option display:none value="" disabled selected hidden><p>Subject</p></option>
+                    <option value="Theroy of Computation">
+                    <option value="Core JAVA">
+                    <option value="Operating System">
+                    <option value="Database Management Systems">
+                    <option value="Combinatorics and Graph Theory">
+                    <option value="Physical Computing and IoT Programming">
+                    <option value="Web Programming">
+                </datalist>
                 <input type="text" placeholder="Full Name">
                 <input type="text" placeholder="Roll Number">
-                <input type="text" placeholder="Subject Code(6 digit)*" pattern="[0-9]{6}" maxlength="6">
+
+
                 <button type="submit"> Login</button>
             </div>
         </form>

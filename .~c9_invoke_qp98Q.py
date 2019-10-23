@@ -1,16 +1,8 @@
 from flask import Flask,render_template,request,redirect,url_for,session
 import sqlite3 as db
-import os
 
 app = Flask(__name__)
 app.secret_key = "E"
-
-
-app.jinja_env.auto_reload = True
-app.config['TEMPLATES_AUTO_RELOAD'] = True
-
-
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -63,7 +55,6 @@ def Create_Question(Email):
         return render_template("question.html",Email=Email)
     else:
         return render_template("index.html")
-
 @app.route("/<string:Email>/Create_Paper",methods=["POST","GET"])
 def Create_Paper(Email):
     if('Email' in  session):
@@ -93,7 +84,6 @@ def Create_Paper(Email):
             redirect(url_for("index.html"))
     else:
         return render_template("index.html")
-
 @app.route("/logout")
 def logout():
     if('Email' in session):
@@ -101,15 +91,3 @@ def logout():
         return render_template("index.html")
     else:
         return("<h4>You already logout</h4>")
-
-@app.route("/<string:Email>/uploader",methods=["POST","GET"])
-def uploader(Email):
-    if request.method == 'POST':
-        try:
-            f = request.files['file']
-            f.save(os.path.join('ok', f.filename))
-            return redirect(url_for('Email',Email=Email))
-        except:
-            return("<h2>Please select a file<h2>")
-    else:
-        return("Filed upload failed")
