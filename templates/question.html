@@ -1,13 +1,19 @@
 {% extends "Professors.html" %}
 {% block p %}
+        <script>
+            let Exams = document.getElementById("Exams")
+            Exams.style.display = "none";
+
+
+        </script>
       <style>
         form>div{
-
+            position:absolute;
             margin-left:auto;
             margin-right:auto;
             width:960px;
-            position:relative;
-            margin-top:-42%;
+
+            margin-top:5%;
             margin-left:33%;
         }
         form>div>input{

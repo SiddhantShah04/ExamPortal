@@ -9,14 +9,19 @@
                 up.style.display="block";
             let onlinePaper = document.getElementById("onlinePaper");
             onlinePaper.style.display = "none";
+
+            let Exams = document.getElementById("Exams")
+            Exams.style.display = "none";
+
         }
 
         </script>
     <style>
         .Professors{
-            position:relative;
-            margin-top:-3%;
+            position:fixed;
+            margin-top:-2%;
             margin-left:-0.6%;
+            float:top;
             font-size:40px;
             background-color:brown;
             color:white;
@@ -37,9 +42,11 @@
             text-decoration:underline;
         }
         .logout>a{
-            margin-left:33.5cm;
+            position:absolute;
+            margin-left:34cm;
             text-decoration:none;
             font-size:20px;
+            margin-top:-1.5%;
         }
         .logout>a:hover{
             text-decoration:underline;
@@ -63,10 +70,62 @@
             background-color:green;
             margin-top:13%;
         }
+        .fieldset{
+                position:relative;
+                margin-top:2%;
+                margin-left:28%;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 25px;
+                font-weight:bold;
+                color:blue;
+            }
+            .fieldset>button{
+
+                border-radius:8px;
+
+                width:100px;
+                height:30px;
+                font-size:14px;
+                border:0px;
+                text-align:center;
+                margin-left:40%;
+                color:white;
+                background-color:green;
+                margin-top:2%;
+                }
 
     </style>
     </head>
     <body style= "background:lightblue;">
+         <header class="logout" ><a href="/logout">Logout</a></header>
+        <div class="Professors">
+            <span style="position:relative;top:45px;left:14px;"><b>Professors zone</b></span>
+                <h6><a href="/{{Email}}/Create_Question" >Create Paper Online</a></h6>
+
+                <h6><a  onclick="upload()" style="cursor:pointer;">Upload a file</a></h6>
+                <h6><a  href="/static/CsvFormat.png" style="cursor:pointer;">See CSV format</a></h6>
+        </div>
+        {% set i=1 %}
+        {% for r in E%}
+            <div id="Exams">
+
+
+            <fieldset class="fieldset">
+                <legend>Paper {{loop.index}}</legend>
+                <span style="word-spacing: 250px;">
+                    {% for row in r %}
+                        {{row}}
+                    {%- endfor -%}
+                </span>
+
+                <br>
+                <br>
+                <button type="submit">Delete paper</button>
+            </fieldset>
+            <br>
+            </div>
+
+        {%- endfor -%}
 
          <div style="display:none;" id="upload" class="upload">
             <form  method = "POST" action = "/{{Email}}/uploader"  enctype = "multipart/form-data" >
@@ -75,14 +134,7 @@
             </form>
         </div>
 
-        <header class="logout" ><a href="/logout">Logout</a></header>
-        <div class="Professors">
-            <span style="position:relative;top:45px;left:14px;"><b>Professors zone</b></span>
-                <h6><a href="/{{Email}}/Create_Question">Create Paper Online</a></h6>
 
-                <h6><a  onclick="upload()" style="cursor:pointer;">Upload a file</a></h6>
-                <h6><a  href="/static/CsvFormat.png" style="cursor:pointer;">See CSV format</a></h6>
-        </div>
         <div id="onlinePaper">
             {% block p %} {% endblock %}
         </div>

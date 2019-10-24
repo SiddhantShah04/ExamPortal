@@ -51,17 +51,13 @@ def ProfessorZone():
         return render_template("Professors.html")
 
 
+
+
+
 @app.route('/Email/<string:Email>',methods=["POST","GET"])
 def Email(Email):
     if('Email' in session):
-        try:
-            con = db.connect(f'{Email}.db')
-            cur = con.cursor()
-            row = cur.execute('select * from Exam')
-            E = row.fetchall()
-        except:
-            return render_template("Professors.html",Email=Email)
-        return render_template("Professors.html",Email=Email,E=E)
+        return render_template("Professors.html",Email=Email)
     else:
         return render_template("index.html")
 
@@ -115,35 +111,24 @@ def logout():
 @app.route("/<string:Email>/uploader",methods=["POST","GET"])
 def uploader(Email):
     if request.method == 'POST':
-
+        os.mkdir(Email)
         f = request.files['file']
-        f.save(os.path.join('UploadFiles',f.filename))
+        
+        filename="firstTy.csv"
+l = []
+with open(filename, 'r') as csvfile: 
+    # creating a csv reader object 
+    csvreader = csv.reader(csvfile) 
+    row0 = next(csvreader)
+    for r in row0:
+        print(r,end=" ")
+        
+    for row in csvreader:
+        print()
+        for r in row:
+            print(f"{r}",end=" ")
 
-        with open(f'UploadFiles/{f.filename}', 'r') as csvfile:
-            # creating a csv reader object
-            csvreader = csv.reader(csvfile)
-            row0 = next(csvreader)
-
-            con2 = db.connect(f'{Email}.db')
-            cur2 = con2.cursor()
-            try:
-                cur2.execute('create table Exam(Branch char(2),sem int(2),SubjectName varchar(100),primary key(Subject))')
-            except:
-                print()
-            cur2.execute('insert into Exam values(?,?,?)',(row0[0],row0[1],row0[2]))
-            con2.commit()
-            try:
-                os.mkdir(row0[0])
-                path = os.path.join(row0[0],row0[1])
-                os.mkdir(path)
-                path2 = os.path.join(path,row0[2])
-                path3 = os.mkdir(path2)
-
-                #saving the subjects,semester and branch for future use or for retrive the information on professor page in .db file
-            except:
-                print()
-            f.save(os.path.join('Branch/Semester/Subject', f.filename))
-        os.remove(f'UploadFiles/{f.filename}')
+        f.save(os.path.join('UploadFiles', f.filename))
         return redirect(url_for('Email',Email=Email))
     else:
         return("Filed upload failed")
