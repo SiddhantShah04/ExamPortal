@@ -1,6 +1,7 @@
 from flask import Flask,render_template,request,redirect,url_for,session
 import sqlite3 as db
 import os
+import csv
 
 app = Flask(__name__)
 app.secret_key = "E"
@@ -9,8 +10,8 @@ app.secret_key = "E"
 app.jinja_env.auto_reload = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -49,13 +50,18 @@ def ProfessorZone():
     else:
         return render_template("Professors.html")
 
+
+
+
+
 @app.route('/Email/<string:Email>',methods=["POST","GET"])
 def Email(Email):
     if('Email' in session):
-        #todo
         return render_template("Professors.html",Email=Email)
     else:
         return render_template("index.html")
+
+
 
 @app.route("/<string:Email>/Create_Question",methods=["POST","GET"])
 def Create_Question(Email):
@@ -105,11 +111,12 @@ def logout():
 @app.route("/<string:Email>/uploader",methods=["POST","GET"])
 def uploader(Email):
     if request.method == 'POST':
-        try:
-            f = request.files['file']
-            f.save(os.path.join('ok', f.filename))
-            return redirect(url_for('Email',Email=Email))
-        except:
-            return("<h2>Please select a file<h2>")
+        f = request.files['file']
+        f.save(os.path.join('UploadFiles', f.filename))
+        return redirect(url_for('Email',Email=Email))
     else:
         return("Filed upload failed")
+
+
+@app.route("/<>"):
+    def
