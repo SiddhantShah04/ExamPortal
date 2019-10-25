@@ -3,13 +3,12 @@ import sqlite3 as db
 import os
 import csv
 
+
 app = Flask(__name__)
 app.secret_key = "E"
 
-
 app.jinja_env.auto_reload = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 @app.route("/")
@@ -31,6 +30,7 @@ def Registration():
     else:
         return render_template("index.html")
 
+
 @app.route("/ProfessorZone",methods=["POST","GET"])
 def ProfessorZone():
     if(request.method == "POST"):
@@ -50,59 +50,28 @@ def ProfessorZone():
     else:
         return render_template("Professors.html")
 
-
 @app.route('/Email/<string:Email>',methods=["POST","GET"])
 def Email(Email):
     if('Email' in session):
+        con = db.connect('Exam.db')
+        cur = con.cursor()
         try:
-            con = db.connect(f'{Email}.db')
-            cur = con.cursor()
-            row = cur.execute('select * from Exam')
-            E = row.fetchall()
+            rows = cur.execute("select Branch,Sem,SubjectName  from Exam")
+            E = rows.fetchall()
         except:
-            return render_template("Professors.html",Email=Email)
+            E=""
+
         return render_template("Professors.html",Email=Email,E=E)
     else:
         return render_template("index.html")
 
-
-
 @app.route("/<string:Email>/Create_Question",methods=["POST","GET"])
 def Create_Question(Email):
     if('Email' in session):
-        return render_template("Paper.html",Email=Email)
+        return render_template("question.html",Email=Email)
     else:
         return render_template("index.html")
 
-@app.route("/<string:Email>/Create_Paper",methods=["POST","GET"])
-def Create_Paper(Email):
-    if('Email' in  session):
-        if(request.method == "POST"):
-            Branch = request.form.get("Branch")
-            Sem = request.form.get("Sem")
-            NumberOfQuestion = int(request.form.get("NumberOfQuestions"))
-            Marks = request.form.get("Marks")
-            SubjectName  = request.form.get("SubjectName")
-            QuestionPaperCode = request.form.get("QuestionPaperCode")
-            try:
-                con2 = db.connect(f'{Email}.db')
-                cur2 = con2.cursor()
-                cur2.execute('create table Paper (Branch char(2),sem int(2),NumberofQuestion int(4),Marks int(5),SubjectName varchar(100),QuestionPaperCode int(6),primary key(QuestionPaperCode))')
-            except:
-                rows = cur2.execute('select QuestionPaperCode from Paper')
-                for row in (rows.fetchall()):
-                    if(row == QuestionPaperCode):
-                        return("<h4>Question Paper Code already taken</h4>")
-            try:
-                cur2.execute('insert into Paper values(?,?,?,?,?,?)',(Branch,Sem,NumberOfQuestion,Marks,SubjectName,QuestionPaperCode))
-            except:
-                return("<h2>Question Paper Code is already taken by you</h2>")
-            con2.commit()
-            return render_template("Paper.html",Email=Email,Branch=Branch,Sem=Sem,NumberOfQuestion=NumberOfQuestion,Marks=Marks,QuestionPaperCode=QuestionPaperCode,SubjectName=SubjectName)
-        else:
-            redirect(url_for("index.html"))
-    else:
-        return render_template("index.html")
 
 @app.route("/logout")
 def logout():
@@ -114,16 +83,35 @@ def logout():
 
 @app.route("/<string:Email>/uploader",methods=["POST","GET"])
 def uploader(Email):
-    if request.method == 'POST':
-
+    if('Email' in session):
         f = request.files['file']
         f.save(os.path.join('UploadFiles',f.filename))
+        Branch = request.form.get("Branch")
+        Sem = request.form.get("Sem")
+        #Subject = (request.form.get("Subject").replace(" ",""))
+        Subject = (request.form.get("Subject"))
+        con2 = db.connect('Exam.db')
+        cur2 = con2.cursor()
+        try:
+            cur2.execute('create table Exam(Branch char(2),sem int(2),SubjectName varchar(100),FileName varchar(100))')
+        except:
+            print()
+        cur2.execute('insert into Exam values(?,?,?,?)',(Branch,Sem,Subject,f.filename))
+        con2.commit()
+        return redirect(url_for('Email',Email=Email))
+    else:
+        return render_template("index.html")
 
+"""
+@app.route("/<string:Email>/uploader",methods=["POST","GET"])
+def upload(Email):
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save(os.path.join('UploadFiles',f.filename))
         with open(f'UploadFiles/{f.filename}', 'r') as csvfile:
             # creating a csv reader object
             csvreader = csv.reader(csvfile)
             row0 = next(csvreader)
-
             con2 = db.connect(f'{Email}.db')
             cur2 = con2.cursor()
             try:
@@ -138,13 +126,20 @@ def uploader(Email):
                 os.mkdir(path)
                 path2 = os.path.join(path,row0[2])
                 path3 = os.mkdir(path2)
-
                 #saving the subjects,semester and branch for future use or for retrive the information on professor page in .db file
             except:
                 print()
-            f.save(os.path.join('Branch/Semester/Subject', f.filename))
+            path4=os.path.join(row0[0],row0[1],row0[2])
+            f.save(os.path.join(path4, f.filename))
         os.remove(f'UploadFiles/{f.filename}')
         return redirect(url_for('Email',Email=Email))
     else:
         return("Filed upload failed")
 
+@app.route('/<string:Email>/<string:r>/delete',methods=["POST","GET"])
+#@app.route('/Email/<string:Email>',methods=["POST","GET"])
+def delete(Email,r):
+
+    return redirect(url_for('Email',Email=Email))
+
+"""

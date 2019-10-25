@@ -4,21 +4,12 @@
          <meta name="viewport" content="width = device-width , initial-scale=1.0">
         <title>Professors Page</title>
         <script>
-        function upload(){
-            let up = document.getElementById("upload");
-                up.style.display="block";
-            let onlinePaper = document.getElementById("onlinePaper");
-            onlinePaper.style.display = "none";
-
-            let Exams = document.getElementById("Exams")
-            Exams.style.display = "none";
-        }
 
         </script>
     <style>
         .Professors{
             position:fixed;
-            margin-top:-1.5%;
+            margin-top:-2.2%;
             margin-left:-0.6%;
             float:top;
             font-size:40px;
@@ -41,11 +32,11 @@
             text-decoration:underline;
         }
         .logout>a{
-            position:absolute;
+            position:relative;
             margin-left:34cm;
             text-decoration:none;
             font-size:20px;
-            margin-top:-1.5%;
+            margin-top:-1%;
         }
         .logout>a:hover{
             text-decoration:underline;
@@ -55,7 +46,6 @@
             position:absolute;
             margin-top:10%;
             margin-left:45%;
-
         }
         .submit{
              border-radius:8px;
@@ -69,67 +59,68 @@
             background-color:green;
             margin-top:13%;
         }
-        .fieldset{
-                position:relative;
-                margin-top:2%;
-                margin-left:28%;
-                font-family: 'Courier New', Courier, monospace;
-                font-size: 25px;
-                font-weight:bold;
-                color:blue;
+
+        .div{
+                position: relative;
+                background-color:white;
+                margin-top:1.5%;
+                margin-left:25%;
+
+                border-color: blue;
             }
-            .fieldset>button{
+            .div>table{
+                position:relative;
+                margin-top:1%;
+                width:100%;
+                height:45%;
+
+                font-family: sans-serif;
+            }
+            .button{
                 position:relative;
                 border-radius:8px;
-                width:100px;
-                height:30px;
-                font-size:14px;
+                margin-top:5%;
+                margin-bottom:5%;
                 border:0px;
+                width:150px;
+                height:40px;
+                font-size:18px;
                 text-align:center;
-                margin-left:40%;
                 color:white;
                 background-color:green;
-                margin-top:2%;
-                }
+
+    }
     </style>
     </head>
     <body style= "background:lightblue;">
-         <header class="logout" ><a href="/logout" style="padding-top:1%;">Logout</a></header>
+         <header class="logout" ><a href="/logout" style="padding-top:0.5%;">Logout</a></header>
         <div class="Professors">
             <span style="position:relative;top:20px;left:14px;"><b>Professors zone</b></span>
-                <h6><a href="/{{Email}}/Create_Question" >Create Paper Online</a></h6>
-
-                <h6><a  onclick="upload()" style="cursor:pointer;">Upload a file</a></h6>
+                <h6><a  href="/{{Email}}/Create_Question" style="cursor:pointer;">Upload a file</a></h6>
                 <h6><a  href="/static/CsvFormat.png" style="cursor:pointer;">See CSV format</a></h6>
         </div>
-
-        <div id="Exams">
-        {% for r in E%}
-            <fieldset class="fieldset">
-                <legend>Paper {{loop.index}}</legend>
-                <span style="word-spacing: 250px;">
-                    {% for row in r %}
-                        {{row}}
-                    {%- endfor -%}
-                </span>
-                <br>
-                <br>
-                <button type="submit">Delete paper</button>
-            </fieldset>
-            <br>
-        {%- endfor -%}
+            <div class="div" id="div">
+            <h1 style="margin-left:38%;color:blue;font-family: sans-serif;"> Uploaded papers</h1>
+            <table border="1" style="border-collapse: collapse;">
+                    <th><h2>Branch</h2></th>
+                    <th><h2>Semeter</h2></th>
+                    <th><h2>Subject</h2></th>
+                    <th><h2>Delete</h2></th>
+                    <th><h2>Deploy</h2></th></span>
+                {% for r in E %}
+                <tr align="center" style="font-size: 25px;">
+                    <td>{{r[0]}}</td>
+                    <td>{{r[1]}}</td>
+                    <td>{{r[2]}}</td>
+                    <td><button type="submit" class="button">Delete</button></td>
+                    <td><button type="submit" class="button">Deploy</button></td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
-         <div style="display:none;" id="upload" class="upload">
-            <form  method = "POST" action = "/{{Email}}/uploader"  enctype = "multipart/form-data" >
-                <input type = "file" name = "file">
-                <input type = "submit" class="submit">
-            </form>
-        </div>
-
 
         <div id="onlinePaper">
             {% block p %} {% endblock %}
         </div>
-
     </body>
 </html>
