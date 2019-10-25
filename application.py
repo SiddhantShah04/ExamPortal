@@ -70,7 +70,7 @@ def Email(Email):
 @app.route("/<string:Email>/Create_Question",methods=["POST","GET"])
 def Create_Question(Email):
     if('Email' in session):
-        return render_template("question.html",Email=Email)
+        return render_template("Paper.html",Email=Email)
     else:
         return render_template("index.html")
 
@@ -127,7 +127,7 @@ def uploader(Email):
             con2 = db.connect(f'{Email}.db')
             cur2 = con2.cursor()
             try:
-                cur2.execute('create table Exam(Branch char(2),sem int(2),SubjectName varchar(100),primary key(Subject))')
+                cur2.execute('create table Exam(Branch char(2),sem int(2),SubjectName varchar(100))')
             except:
                 print()
             cur2.execute('insert into Exam values(?,?,?)',(row0[0],row0[1],row0[2]))
