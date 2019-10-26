@@ -56,7 +56,8 @@ def Email(Email):
         con = db.connect('Exam.db')
         cur = con.cursor()
         try:
-            rows = cur.execute("select Branch,Sem,SubjectName  from Exam")
+
+            rows = cur.execute(f'select Branch,Sem,SubjectName  from "Exam" where Email = "{Email}" ')
             E = rows.fetchall()
         except:
             E=""
@@ -93,15 +94,32 @@ def uploader(Email):
         con2 = db.connect('Exam.db')
         cur2 = con2.cursor()
         try:
-            cur2.execute('create table Exam(Branch char(2),sem int(2),SubjectName varchar(100),FileName varchar(100))')
+            cur2.execute('create table Exam(Branch char(2),sem int(2),SubjectName varchar(100),FileName varchar(100),Email varchar(225))')
         except:
             print()
-        cur2.execute('insert into Exam values(?,?,?,?)',(Branch,Sem,Subject,f.filename))
+        cur2.execute('insert into Exam values(?,?,?,?,?)',(Branch,Sem,Subject,(f.filename),Email))
         con2.commit()
         return redirect(url_for('Email',Email=Email))
     else:
         return render_template("index.html")
-
+@app.route("/<string:r>/delete",methods=["POST","GET"])
+def delete(r):
+    if('Email' in session):
+        Email = session['Email']
+        con = db.connect('Exam.db')
+        cur = con.cursor()
+        rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{r}" ')
+        E = rows.fetchone()
+        R = E[0]
+        cur.execute(f'DELETE FROM "Exam" WHERE SubjectName = "{r}" ')
+        con.commit()
+        os.remove(f'UploadFiles/{R}')
+        return redirect(url_for('Email',Email=Email))
+    else:
+        return render_template("index.html")
+@app.route("/StudentZone",method=["POST","GET"])
+def StudentZone():
+    return("UnderProcess")
 """
 @app.route("/<string:Email>/uploader",methods=["POST","GET"])
 def upload(Email):

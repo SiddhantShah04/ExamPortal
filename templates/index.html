@@ -71,15 +71,15 @@
         <header class="top">
              <span style="position:relative;top:10px;left:10px"><b>ExamSoft</b><prep>&nbsp;&nbsp; Rizvi College</span>
         </header>
-        <form id="Students">
+        <form id="Students" action="/StudentZone" method="POST" name="Student">
             <div style="margin-left:50%">
                 <span >Students zone</span>
-               <select>
+               <select name="Branch">
                     <option display:none value="" disabled selected hidden><p>Branch</p></option>
                     <option value="Cs">CS</option>
                     <option value="It">IT</option>
                 </select> <br>
-                <select style="position:absolute;margin-left:7cm;margin-top:-1.95cm;">
+                <select style="position:absolute;margin-left:7cm;margin-top:-1.95cm;" name="Sem">
                     <option display:none value:"" disabled selected hidden>Semester</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -88,8 +88,7 @@
                     <option value="5">5</option>
                     <option value="6">6</option>
                 </select>
-
-                <input type="text" style="margin-left:27.3%;overflow: scroll;" list="Subject" name="SubjectName" placeholder="Subject"><br>
+                <input type="text" style="margin-left:27.3%;overflow: scroll;" list="Subject" name="Subject" placeholder="Subject"><br>
                 <datalist id="Subject"style="overflow: scroll;">
                     <option display:none value="" disabled selected hidden><p>Subject</p></option>
                     <option value="Theroy of Computation">
@@ -100,13 +99,14 @@
                     <option value="Physical Computing and IoT Programming">
                     <option value="Web Programming">
                 </datalist>
-                <input type="text" placeholder="Full Name">
-                <input type="text" placeholder="Roll Number">
+                <input type="text" placeholder="Full Name" name="Name">
+                <input type="text" placeholder="Roll Number" name="Roll">
 
 
                 <button type="submit"> Login</button>
             </div>
         </form>
+
         <form action="/ProfessorZone" method="POST" name="Professor">
             <div>
                 <span>Professors zone</span>
