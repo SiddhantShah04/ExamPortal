@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Exam Zone</title>
+        <script>
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    let i=30;
+                    function DSeconds(){
+                    document.getElementById("Time").innerHTML = (i--);
+                    if(i == 0){
+                        document.getElementById("Time").innerHTML = "Time Ends";
+                        document.write("<h1>Exam Ends </h1>")
+                    }
+            }
+            setInterval(DSeconds, 1200);
+                });
+        </script>
+
+        <style>
+        h3{
+            background-color:lightgray;
+            color:black;
+            padding: 2%;
+            font-family: sans-serif;
+        }
+        .table{
+            position: relative; ;
+            background-color:antiquewhite ;
+            text-align: center;
+            margin-left:15% ;
+            margin-right:9% ;
+            border-radius:6px ;
+            border: solid 1px gray;
+        }
+        .options{
+            position: fixed;
+            font-family: sans-serif;
+            left: 30%;
+            width: 50%;
+            height: 8%;
+            text-align: left;
+            border-radius:6px;
+            border:solid 1px grey;
+            font-size: 20px;
+        }
+        .options:hover{
+            font-size: 30px;
+            background-color:green;
+            color:white;
+        }
+        .time{
+                font-family: sans-serif;
+                font-size: 25px;
+            }
+            h2{
+
+            }
+        </style>
+    </head>
+    <body style="background-color:lightsteelblue;backface-visibility: 5%;">
+        <div class="table">
+                <h2 id="Time">
+                  Your time  starts now
+                    </h2>
+            <h3>{{row0[0]}}</h3>
+            <table height="80">
+                <form action="/#" method="POST">
+                    <tr><button type="submit" class="options">{{row0[1]}}</button></tr><br><br><br><br>
+                    <tr><button type="submit" class="options" >{{row0[2]}}</button></tr><br><br><br><br>
+                    <tr><button type="submit" class="options">{{row0[3]}}</button></tr><br><br><br><br>
+                    <tr><button type="submit" class="options">{{row0[4]}}</button></tr>
+                </form>
+            </table>
+            <h5 style="color: red;font-family:sans-serif;margin-top:5% ;">Please select an option</select></h5>
+        </div>
+    </body>
+</html>

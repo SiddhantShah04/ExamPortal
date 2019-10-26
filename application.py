@@ -117,9 +117,25 @@ def delete(r):
         return redirect(url_for('Email',Email=Email))
     else:
         return render_template("index.html")
-@app.route("/StudentZone",method=["POST","GET"])
+
+
+@app.route("/StudentZone",methods=["POST","GET"])
 def StudentZone():
-    return("UnderProcess")
+    Branch = request.form.get("Branch")
+    Sem = request.form.get("Sem")
+    Subject = request.form.get("Subject")
+    con = db.connect('Exam.db')
+    cur = con.cursor()
+    rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{Subject}" ')
+    E = rows.fetchone()
+    R = E[0]
+    with open(f"UploadFiles/{R}", 'r') as csvfile:
+    # creating a csv reader object
+        csvreader = csv.reader(csvfile)
+        row0 = next(csvreader)
+        return render_template("ExamZone.html",row0 = row0)
+
+
 """
 @app.route("/<string:Email>/uploader",methods=["POST","GET"])
 def upload(Email):
