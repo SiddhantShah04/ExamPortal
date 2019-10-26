@@ -63,13 +63,13 @@
                 <h2 id="Time">
                   Your time  starts now
                     </h2>
-            <h3>{{row0[0]}}</h3>
+            <h3>{{rows[0]}}</h3>
             <table height="80">
-                <form action="/StudentZone" method="POST">
-                    <tr><button type="submit" class="options">{{row0[1]}}</button></tr><br><br><br><br>
-                    <tr><button type="submit" class="options" >{{row0[2]}}</button></tr><br><br><br><br>
-                    <tr><button type="submit" class="options">{{row0[3]}}</button></tr><br><br><br><br>
-                    <tr><button type="submit" class="options">{{row0[4]}}</button></tr>
+                <form action="/{{Roll}}/Next" method="POST">
+                    <tr><button type="submit" class="options" name="name" value="x"><span name>{{rows[1]}}</span></button></tr><br><br><br><br>
+                    <tr><button type="submit" class="options" name="name" value="x"><span>{{rows[2]}}</span></button></tr><br><br><br><br>
+                    <tr><button type="submit" class="options" name="name" value="x"><span>{{rows[3]}}</span></button></tr><br><br><br><br>
+                    <tr><button type="submit" class="options" name="name" value="x"><span>{{rows[4]}}</span></button></tr>
                 </form>
             </table>
             <h5 style="color: red;font-family:sans-serif;margin-top:5% ;">Please select an option</select></h5>

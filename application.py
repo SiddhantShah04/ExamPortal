@@ -56,12 +56,10 @@ def Email(Email):
         con = db.connect('Exam.db')
         cur = con.cursor()
         try:
-
             rows = cur.execute(f'select Branch,Sem,SubjectName  from "Exam" where Email = "{Email}" ')
             E = rows.fetchall()
         except:
             E=""
-
         return render_template("Professors.html",Email=Email,E=E)
     else:
         return render_template("index.html")
@@ -121,34 +119,50 @@ def delete(r):
 
 @app.route("/StudentZone",methods=["POST","GET"])
 def StudentZone():
+    i=0
+    session['Q']=i
     Branch = request.form.get("Branch")
-    Sem = request.form.get("Sem")
+    Roll = request.form.get("Roll")
     Subject = request.form.get("Subject")
     con = db.connect('Exam.db')
     cur = con.cursor()
     rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{Subject}" ')
     E = rows.fetchone()
     R = E[0]
+
     with open(f"UploadFiles/{R}", 'r') as csvfile:
     # creating a csv reader object
         csvreader = csv.reader(csvfile)
         con2 = db.connect('Exam.db')
         cur2 = con2.cursor()
         try:
-            cur2.execute('create table Paper(Question text,option1 text,option2 text,option3 text,option4 text,answer text,time int(2))')
+            cur2.execute(f'create table "{Roll}"(Question text,option1 text,option2 text,option3 text,option4 text,answer text,time int(2))')
         except:
             print()
 
         for i in csvreader:
             print(i)
-            cur2.execute('insert into Paper values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
+            cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
         con2.commit()
-        return("ok")
+        return redirect(url_for("Next",Roll=Roll))
 
-@app.route("/Next",methods = ["POST","GET"])
-def Next():
-
-
+@app.route("/<int:Roll>/Next",methods = ["POST","GET"])
+def Next(Roll):
+    QNo = session['Q']
+    con2 = db.connect('Exam.db')
+    cur2 = con2.cursor()
+    rows1 = cur2.execute(f'select answer from "{Roll}"')
+    E1 = rows1.fetchall()
+    rows = E1[0]
+    #QTaken = request.form.get("name")
+    #cur2.execute(f'alter table "{Roll}" add OTaken text')
+    #cur2.execute(f'insert into "{Roll}" (OTaken) values(?)',("l"))
+    rows = cur2.execute(f'select Question,option1,option2,option3,option4,time from "{Roll}"')
+    E = rows.fetchall()
+    rows = E[QNo]
+    QNo= QNo+1
+    session['Q'] = session['Q'] + 1
+    return render_template("ExamZone.html",rows=rows,Roll=Roll)
 
 """
 @app.route("/<string:Email>/uploader",methods=["POST","GET"])
