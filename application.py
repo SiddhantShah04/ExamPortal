@@ -132,8 +132,22 @@ def StudentZone():
     with open(f"UploadFiles/{R}", 'r') as csvfile:
     # creating a csv reader object
         csvreader = csv.reader(csvfile)
-        row0 = next(csvreader)
-        return render_template("ExamZone.html",row0 = row0)
+        con2 = db.connect('Exam.db')
+        cur2 = con2.cursor()
+        try:
+            cur2.execute('create table Paper(Question text,option1 text,option2 text,option3 text,option4 text,answer text,time int(2))')
+        except:
+            print()
+
+        for i in csvreader:
+            print(i)
+            cur2.execute('insert into Paper values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
+        con2.commit()
+        return("ok")
+
+@app.route("/Next",methods = ["POST","GET"])
+def Next():
+
 
 
 """
