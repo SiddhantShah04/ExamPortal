@@ -2,6 +2,7 @@ from flask import Flask,render_template,request,redirect,url_for,session
 import sqlite3 as db
 import os
 import csv
+import json
 
 
 app = Flask(__name__)
@@ -129,7 +130,6 @@ def StudentZone():
     rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{Subject}" ')
     E = rows.fetchone()
     R = E[0]
-
     with open(f"UploadFiles/{R}", 'r') as csvfile:
     # creating a csv reader object
         csvreader = csv.reader(csvfile)
@@ -154,15 +154,29 @@ def Next(Roll):
     rows1 = cur2.execute(f'select answer from "{Roll}"')
     E1 = rows1.fetchall()
     rows = E1[0]
-    #QTaken = request.form.get("name")
-    #cur2.execute(f'alter table "{Roll}" add OTaken text')
-    #cur2.execute(f'insert into "{Roll}" (OTaken) values(?)',("l"))
+    #return("ok")
     rows = cur2.execute(f'select Question,option1,option2,option3,option4,time from "{Roll}"')
     E = rows.fetchall()
-    rows = E[QNo]
-    QNo= QNo+1
+    r=E[QNo-1]
+    #cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
+
+    QTaken = request.form.get("O")
+    try:
+        cur2.execute(f'alter table "{Roll}" add OTaken text')
+    except:
+        pass
+    cur2.execute(f'UPDATE "{Roll}" SET "OTaken"="{QTaken}" WHERE "Question" = "{r[0]}"')
+    con2.commit()
     session['Q'] = session['Q'] + 1
-    return render_template("ExamZone.html",rows=rows,Roll=Roll)
+    try:
+        rows = E[QNo]
+    except:
+        return("<h1 style='text-align:center;'>Exam Done<br>Leave the premises!</h1>")
+    return render_template("ExamZone.html",rows=rows,Roll=Roll,row=json.dumps(rows[5]))
+
+@app.route("/Deploy",methods=["POST","GET"])
+def Deploy():
+    pass
 
 """
 @app.route("/<string:Email>/uploader",methods=["POST","GET"])
