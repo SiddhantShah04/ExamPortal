@@ -10,10 +10,10 @@
                     document.getElementById("Time").innerHTML = (i--);
                     if(i == 0){
                         document.getElementById("Time").innerHTML = "Time Ends";
-                        document.write("<h1>Exam Ends </h1>")
+                        document.getElementById("ans").submit();
                     }
             }
-            setInterval(DSeconds, 1200);
+            setInterval(DSeconds, 1100);
                 });
         </script>
 
@@ -66,19 +66,19 @@
             <h3 name="Q">{{rows[0]}}</h3>
             <table height="80">
 
-                <form action="/{{Roll}}/Next" method="POST">
+                <form action="/{{Subject}}/{{Roll}}/Next" method="POST" id="ans">
                     <tr><input type="submit" class="options"  value="{{rows[1]}}" name="O"></tr><br><br><br><br>
                 </form>
 
-                <form action="/{{Roll}}/Next" method="POST">
+                <form action="/{{Subject}}/{{Roll}}/Next" method="POST">
                     <tr><input type="submit" class="options"  value="{{rows[2]}}" name="O"></tr><br><br><br><br>
                 </form>
 
-                <form action="/{{Roll}}/Next" method="POST">
+                <form action="/{{Subject}}/{{Roll}}/Next" method="POST">
                     <tr><input type="submit" class="options"  value="{{rows[3]}}" name="O"></tr><br><br><br><br>
                 </form>
 
-                 <form action="/{{Roll}}/Next" method="POST">
+                 <form action="/{{Subject}}/{{Roll}}/Next" method="POST">
                     <tr><input type="submit" class="options"  value="{{rows[4]}}" name="O"></tr><br><br><br><br>
                 </form>
 
