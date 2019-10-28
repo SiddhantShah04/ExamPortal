@@ -206,8 +206,9 @@ def Next(Roll,Subject):
             pass
         cur2.execute('insert into Paper values(?,?)',(Roll,R))
         con2.commit()
+
         return("<h1 style='text-align:center;'>Exam Done<br>Leave the premises!</h1>")
-    return render_template("ExamZone.html",Subject=Subject,rows=rows,Roll=Roll,row=json.dumps(rows[5]))
+    return render_template("ExamZone.html",Subject=Subject,rows=rows,Roll=Roll)
 
 @app.route("/<string:Email>/<string:Subject>/SeeResult",methods=["POST","GET"])
 def SeeResult(Email,Subject):
