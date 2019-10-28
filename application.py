@@ -1,7 +1,9 @@
-from flask import Flask,render_template,request,redirect,url_for,session
+from flask import Flask,render_template,request,redirect,url_for,session,send_from_directory,send_file
 import sqlite3 as db
-import os
+import os,shutil
 import csv
+import json
+
 
 
 app = Flask(__name__)
@@ -24,6 +26,10 @@ def Registration():
             return("<h2>Are stupid or what</h2>?")
         con = db.connect('registration.db')
         cur = con.cursor()
+        try:
+            cur.execute('create table Registration(Email text,Password text)')
+        except:
+            pass
         cur.execute('INSERT INTO Registration VALUES (?,?)',(Email,password))
         con.commit()
         return redirect(url_for("Registration"))
@@ -39,9 +45,9 @@ def ProfessorZone():
         Password = request.form.get("Password")
         con = db.connect('registration.db')
         cur = con.cursor()
-        rows = cur.execute("select email from Registration")
+        rows = cur.execute("select Email from Registration")
         E = rows.fetchall()
-        rows = cur.execute("select password from Registration")
+        rows = cur.execute("select Password from Registration")
         P = rows.fetchall()
         for i in range(len(E)):
             if(E[i][0] == Email and P[i][0] == Password):
@@ -100,6 +106,7 @@ def uploader(Email):
         return redirect(url_for('Email',Email=Email))
     else:
         return render_template("index.html")
+
 @app.route("/<string:r>/delete",methods=["POST","GET"])
 def delete(r):
     if('Email' in session):
@@ -111,7 +118,15 @@ def delete(r):
         R = E[0]
         cur.execute(f'DELETE FROM "Exam" WHERE SubjectName = "{r}" ')
         con.commit()
-        os.remove(f'UploadFiles/{R}')
+        try:
+            os.remove(f'Deploy/{R}')
+        except:
+            os.remove(f'UploadFiles/{R}')
+        try:
+            os.remove(f"Results/{R}.csv")
+        except:
+            pass
+
         return redirect(url_for('Email',Email=Email))
     else:
         return render_template("index.html")
@@ -123,46 +138,112 @@ def StudentZone():
     session['Q']=i
     Branch = request.form.get("Branch")
     Roll = request.form.get("Roll")
-    Subject = request.form.get("Subject")
+
+    Subject = (request.form.get("Subject"))
     con = db.connect('Exam.db')
     cur = con.cursor()
     rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{Subject}" ')
     E = rows.fetchone()
     R = E[0]
-
-    with open(f"UploadFiles/{R}", 'r') as csvfile:
+    with open(f"Deploy/{R}", 'r') as csvfile:
     # creating a csv reader object
         csvreader = csv.reader(csvfile)
-        con2 = db.connect('Exam.db')
+        con2 = db.connect(f'{Subject}.db')
         cur2 = con2.cursor()
         try:
             cur2.execute(f'create table "{Roll}"(Question text,option1 text,option2 text,option3 text,option4 text,answer text,time int(2))')
         except:
             print()
-
         for i in csvreader:
-            print(i)
-            cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
+            try:
+                cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
+            except:
+                return("<h1 style='text-align:center;'>Roll Number is<br>Already taken!</h1>")
         con2.commit()
-        return redirect(url_for("Next",Roll=Roll))
+        return redirect(url_for("Next",Roll=Roll,Subject=Subject))
 
-@app.route("/<int:Roll>/Next",methods = ["POST","GET"])
-def Next(Roll):
+@app.route("/<string:Subject>/<int:Roll>/Next",methods = ["POST","GET"])
+def Next(Roll,Subject):
     QNo = session['Q']
-    con2 = db.connect('Exam.db')
+    con2 = db.connect(f'{Subject}.db')
     cur2 = con2.cursor()
     rows1 = cur2.execute(f'select answer from "{Roll}"')
     E1 = rows1.fetchall()
     rows = E1[0]
-    #QTaken = request.form.get("name")
-    #cur2.execute(f'alter table "{Roll}" add OTaken text')
-    #cur2.execute(f'insert into "{Roll}" (OTaken) values(?)',("l"))
+    #return("ok")
     rows = cur2.execute(f'select Question,option1,option2,option3,option4,time from "{Roll}"')
     E = rows.fetchall()
-    rows = E[QNo]
-    QNo= QNo+1
+    r=E[QNo-1]
+    #cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
+
+    QTaken = request.form.get("O")
+    try:
+        cur2.execute(f'alter table "{Roll}" add WR text')
+        cur2.execute(f'alter table "{Roll}" add OTaken text')
+    except:
+        pass
+    cur2.execute(f'UPDATE "{Roll}" SET "OTaken"="{QTaken}" WHERE "Question" = "{r[0]}"')
+    con2.commit()
+    answer = cur2.execute(f'select answer from "{Roll}" where "Question" = "{r[0]}"')
+    A = answer.fetchone()
+    if(A[0] == QTaken ):
+        cur2.execute(f'UPDATE "{Roll}" SET "WR"="R" WHERE "Question" = "{r[0]}"')
+    else:
+        cur2.execute(f'UPDATE "{Roll}" SET "WR"="W" WHERE "Question" = "{r[0]}"')
+    con2.commit()
     session['Q'] = session['Q'] + 1
-    return render_template("ExamZone.html",rows=rows,Roll=Roll)
+    try:
+        rows = E[QNo]
+    except:
+        E2 = cur2.execute(f'SELECT COUNT(WR) FROM "{Roll}"  WHERE "WR" = "R"')
+        E2 = E2.fetchone()
+        R = E2[0]
+        try:
+            cur2.execute('Create table Paper(Roll,WCount)')
+        except:
+            pass
+        cur2.execute('insert into Paper values(?,?)',(Roll,R))
+        con2.commit()
+        return("<h1 style='text-align:center;'>Exam Done<br>Leave the premises!</h1>")
+    return render_template("ExamZone.html",Subject=Subject,rows=rows,Roll=Roll,row=json.dumps(rows[5]))
+
+@app.route("/<string:Email>/<string:Subject>/SeeResult",methods=["POST","GET"])
+def SeeResult(Email,Subject):
+    con2 = db.connect(f'{Subject}.db')
+    cur2 = con2.cursor()
+    try:
+        E = cur2.execute('select * from Paper order by Roll')
+    except:
+        return("<h1 style='text-align:center;'>Exam is not done<br>Yet!</h1>")
+    R = E.fetchall()
+    fields = ['Roll','Total right answer']
+    rows = []
+    for i in R:
+        rows.append(i)
+
+    filename = f"Results/{Subject}.csv"
+
+    with open(filename,'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(fields)
+        csvwriter.writerows(rows)
+    path = f"{filename}"
+    return send_file(path, as_attachment=True)
+
+@app.route("/<string:Email>/<string:r>/Deploy",methods=["POST","GET"])
+def Deploy(Email,r):
+    con = db.connect('Exam.db')
+    cur = con.cursor()
+    rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{r}" ')
+    E = rows.fetchone()
+    R = E[0]
+    try:
+        shutil.move(f'UploadFiles/{R}', 'Deploy')
+        return redirect(url_for('Email',Email=Email))
+    except:
+        return("<h1 style='text-align:center;'>Already deployed!</h1>")
+
+
 
 """
 @app.route("/<string:Email>/uploader",methods=["POST","GET"])

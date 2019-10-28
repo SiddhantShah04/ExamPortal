@@ -5,15 +5,15 @@
         <script>
 
                 document.addEventListener('DOMContentLoaded', function () {
-                    let i=30;
+                    let i= {{ row|safe }};
                     function DSeconds(){
                     document.getElementById("Time").innerHTML = (i--);
                     if(i == 0){
                         document.getElementById("Time").innerHTML = "Time Ends";
-                        document.write("<h1>Exam Ends </h1>")
+                        document.getElementById("ans").submit();
                     }
             }
-            setInterval(DSeconds, 1200);
+            setInterval(DSeconds, 1100);
                 });
         </script>
 
@@ -61,16 +61,28 @@
     <body style="background-color:lightsteelblue;backface-visibility: 5%;">
         <div class="table">
                 <h2 id="Time">
-                  Your time  starts now
+                  Time Starts
                     </h2>
-            <h3>{{rows[0]}}</h3>
+            <h3 name="Q">{{rows[0]}}</h3>
             <table height="80">
-                <form action="/{{Roll}}/Next" method="POST">
-                    <tr><button type="submit" class="options" name="name" value="x"><span name>{{rows[1]}}</span></button></tr><br><br><br><br>
-                    <tr><button type="submit" class="options" name="name" value="x"><span>{{rows[2]}}</span></button></tr><br><br><br><br>
-                    <tr><button type="submit" class="options" name="name" value="x"><span>{{rows[3]}}</span></button></tr><br><br><br><br>
-                    <tr><button type="submit" class="options" name="name" value="x"><span>{{rows[4]}}</span></button></tr>
+
+                <form action="/{{Subject}}/{{Roll}}/Next" method="POST" id="ans">
+                    <tr><input type="submit" class="options"  value="{{rows[1]}}" name="O"></tr><br><br><br><br>
                 </form>
+
+                <form action="/{{Subject}}/{{Roll}}/Next" method="POST">
+                    <tr><input type="submit" class="options"  value="{{rows[2]}}" name="O"></tr><br><br><br><br>
+                </form>
+
+                <form action="/{{Subject}}/{{Roll}}/Next" method="POST">
+                    <tr><input type="submit" class="options"  value="{{rows[3]}}" name="O"></tr><br><br><br><br>
+                </form>
+
+                 <form action="/{{Subject}}/{{Roll}}/Next" method="POST">
+                    <tr><input type="submit" class="options"  value="{{rows[4]}}" name="O"></tr><br><br><br><br>
+                </form>
+
+
             </table>
             <h5 style="color: red;font-family:sans-serif;margin-top:5% ;">Please select an option</select></h5>
         </div>
