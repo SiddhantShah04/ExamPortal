@@ -26,6 +26,10 @@ def Registration():
             return("<h2>Are stupid or what</h2>?")
         con = db.connect('registration.db')
         cur = con.cursor()
+        try:
+            cur.execute('create table Registration(Email text,Password text)')
+        except:
+            pass
         cur.execute('INSERT INTO Registration VALUES (?,?)',(Email,password))
         con.commit()
         return redirect(url_for("Registration"))
@@ -41,9 +45,9 @@ def ProfessorZone():
         Password = request.form.get("Password")
         con = db.connect('registration.db')
         cur = con.cursor()
-        rows = cur.execute("select email from Registration")
+        rows = cur.execute("select Email from Registration")
         E = rows.fetchall()
-        rows = cur.execute("select password from Registration")
+        rows = cur.execute("select Password from Registration")
         P = rows.fetchall()
         for i in range(len(E)):
             if(E[i][0] == Email and P[i][0] == Password):
@@ -118,6 +122,10 @@ def delete(r):
             os.remove(f'Deploy/{R}')
         except:
             os.remove(f'UploadFiles/{R}')
+        try:
+            os.remove(f"Results/{R}.csv")
+        except:
+            pass
 
         return redirect(url_for('Email',Email=Email))
     else:
@@ -203,7 +211,10 @@ def Next(Roll,Subject):
 def SeeResult(Email,Subject):
     con2 = db.connect(f'{Subject}.db')
     cur2 = con2.cursor()
-    E = cur2.execute('select * from Paper order by Roll')
+    try:
+        E = cur2.execute('select * from Paper order by Roll')
+    except:
+        return("<h1 style='text-align:center;'>Exam is not done<br>Yet!</h1>")
     R = E.fetchall()
     fields = ['Roll','Total right answer']
     rows = []
