@@ -142,7 +142,9 @@ def StudentZone():
     Subject = (request.form.get("Subject"))
     con = db.connect('Exam.db')
     cur = con.cursor()
+
     rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{Subject}" ')
+
     E = rows.fetchone()
     R = E[0]
     with open(f"Deploy/{R}", 'r') as csvfile:
