@@ -1,8 +1,9 @@
-from flask import Flask,render_template,request,redirect,url_for,session
+from flask import Flask,render_template,request,redirect,url_for,session,send_from_directory,send_file
 import sqlite3 as db
 import os,shutil
 import csv
 import json
+
 
 
 app = Flask(__name__)
@@ -136,7 +137,7 @@ def StudentZone():
     rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{Subject}" ')
     E = rows.fetchone()
     R = E[0]
-    with open(f"UploadFiles/{R}", 'r') as csvfile:
+    with open(f"Deploy/{R}", 'r') as csvfile:
     # creating a csv reader object
         csvreader = csv.reader(csvfile)
         con2 = db.connect(f'{Subject}.db')
@@ -192,10 +193,31 @@ def Next(Roll,Subject):
         try:
             cur2.execute('Create table Paper(Roll,WCount)')
         except:
-            cur2.execute('insert into Paper values(?,?)',(Roll,R))
-            con2.commit()
+            pass
+        cur2.execute('insert into Paper values(?,?)',(Roll,R))
+        con2.commit()
         return("<h1 style='text-align:center;'>Exam Done<br>Leave the premises!</h1>")
     return render_template("ExamZone.html",Subject=Subject,rows=rows,Roll=Roll,row=json.dumps(rows[5]))
+
+@app.route("/<string:Email>/<string:Subject>/SeeResult",methods=["POST","GET"])
+def SeeResult(Email,Subject):
+    con2 = db.connect(f'{Subject}.db')
+    cur2 = con2.cursor()
+    E = cur2.execute('select * from Paper order by Roll')
+    R = E.fetchall()
+    fields = ['Roll','Total right answer']
+    rows = []
+    for i in R:
+        rows.append(i)
+
+    filename = f"Results/{Subject}.csv"
+
+    with open(filename,'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(fields)
+        csvwriter.writerows(rows)
+    path = f"{filename}"
+    return send_file(path, as_attachment=True)
 
 @app.route("/<string:Email>/<string:r>/Deploy",methods=["POST","GET"])
 def Deploy(Email,r):
@@ -209,6 +231,7 @@ def Deploy(Email,r):
         return redirect(url_for('Email',Email=Email))
     except:
         return("<h1 style='text-align:center;'>Already deployed!</h1>")
+
 
 
 """
