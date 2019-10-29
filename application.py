@@ -157,10 +157,10 @@ def StudentZone():
         except:
             print()
         for i in csvreader:
-
-            cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
-
-                #return("<h1 style='text-align:center;'>Roll Number is<br>Already taken!</h1>")
+            try:
+                cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
+            except:
+                return("<h1 style='text-align:center;'>Roll Number is<br>Already taken!</h1>")
         con2.commit()
         return redirect(url_for("Next",Roll=Roll,Subject=Subject))
 
