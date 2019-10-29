@@ -4,16 +4,18 @@
         <title>Exam Zone</title>
         <script>
 
-                document.addEventListener('DOMContentLoaded', function () {
-                    let i= {{ row|safe }};
+               document.addEventListener('DOMContentLoaded', function () {
+
                     function DSeconds(){
-                    document.getElementById("Time").innerHTML = (i--);
-                    if(i == 0){
+                    var i = document.getElementById("Time").innerHTML;
+
+                    document.getElementById("Time").innerHTML=--i;
+                if(i == 0){
                         document.getElementById("Time").innerHTML = "Time Ends";
                         document.getElementById("ans").submit();
                     }
             }
-            setInterval(DSeconds, 1100);
+            setInterval(DSeconds, 1000);
                 });
         </script>
 
@@ -61,7 +63,7 @@
     <body style="background-color:lightsteelblue;backface-visibility: 5%;">
         <div class="table">
                 <h2 id="Time">
-                  Time Starts
+                  {{rows[5]}}
                     </h2>
             <h3 name="Q">{{rows[0]}}</h3>
             <table height="80">
