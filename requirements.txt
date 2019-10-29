@@ -25,6 +25,7 @@ docutils==0.15.2
 EditorConfig==0.12.2
 Flask==1.1.1
 Flask-Session==0.3.1
+gunicorn
 help50==3.0.0
 html5lib==1.0.1
 icdiff==1.9.1
