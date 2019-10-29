@@ -157,10 +157,10 @@ def StudentZone():
         except:
             print()
         for i in csvreader:
-            try:
-                cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
-            except:
-                return("<h1 style='text-align:center;'>Roll Number is<br>Already taken!</h1>")
+
+            cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
+
+                #return("<h1 style='text-align:center;'>Roll Number is<br>Already taken!</h1>")
         con2.commit()
         return redirect(url_for("Next",Roll=Roll,Subject=Subject))
 
@@ -176,7 +176,6 @@ def Next(Roll,Subject):
     rows = cur2.execute(f'select Question,option1,option2,option3,option4,time from "{Roll}"')
     E = rows.fetchall()
     r=E[QNo-1]
-    #cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
 
     QTaken = request.form.get("O")
     try:
@@ -248,44 +247,3 @@ def Deploy(Email,r):
 
 
 
-"""
-@app.route("/<string:Email>/uploader",methods=["POST","GET"])
-def upload(Email):
-    if request.method == 'POST':
-        f = request.files['file']
-        f.save(os.path.join('UploadFiles',f.filename))
-        with open(f'UploadFiles/{f.filename}', 'r') as csvfile:
-            # creating a csv reader object
-            csvreader = csv.reader(csvfile)
-            row0 = next(csvreader)
-            con2 = db.connect(f'{Email}.db')
-            cur2 = con2.cursor()
-            try:
-                cur2.execute('create table Exam(Branch char(2),sem int(2),SubjectName varchar(100))')
-            except:
-                print()
-            cur2.execute('insert into Exam values(?,?,?)',(row0[0],row0[1],row0[2]))
-            con2.commit()
-            try:
-                os.mkdir(row0[0])
-                path = os.path.join(row0[0],row0[1])
-                os.mkdir(path)
-                path2 = os.path.join(path,row0[2])
-                path3 = os.mkdir(path2)
-                #saving the subjects,semester and branch for future use or for retrive the information on professor page in .db file
-            except:
-                print()
-            path4=os.path.join(row0[0],row0[1],row0[2])
-            f.save(os.path.join(path4, f.filename))
-        os.remove(f'UploadFiles/{f.filename}')
-        return redirect(url_for('Email',Email=Email))
-    else:
-        return("Filed upload failed")
-
-@app.route('/<string:Email>/<string:r>/delete',methods=["POST","GET"])
-#@app.route('/Email/<string:Email>',methods=["POST","GET"])
-def delete(Email,r):
-
-    return redirect(url_for('Email',Email=Email))
-
-"""
