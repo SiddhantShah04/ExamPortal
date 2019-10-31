@@ -16,13 +16,16 @@
             }
             div{
                 position:fixed;
-                margin-top:5%;
+                margin-top:3%;
                 font-size:0.7cm;
+                background-color: #f1f1f1;
                 text-align:center;
+                box-sizing: border-box;
                 width:40px;
                 height:10px;
             }
             form>div>input{
+                position:relative;
                 border-radius:12px;
                 border:solid 1px grey;
                 font-size:20px;
@@ -36,12 +39,14 @@
                 left:10px;
             }
             form>div>button{
+                position:relative;
                 border-radius:12px;
                 margin-left:140px;
                 text-align:center;
                 color:white;
                 font-size:25px;
                 border:0px;
+                margin-top:55%;
                 background-color:green;
                 width:200px;
                 height:45px;
@@ -58,6 +63,7 @@
         form>div>a{
             position:fixed;
             margin-top:2%;
+            box-sizing: border-box;
             margin-left:12.5%;
             font-size:15px;
             font-family:"arial";
@@ -74,6 +80,14 @@
             margin-top:41%;
             font-family: sans-serif;
         }
+        #error{
+            font-size:15px;
+            color:red;
+            font-family: sans-serif;
+            position:absolute;
+            margin-top:22%;
+            margin-left:11%;
+        }
         @media only screen and (max-width: 1026px) {
         .small {
         display: none;
@@ -81,14 +95,15 @@
 }
         </style>
     </head>
-    <body>
+    <body style="background-color: #f1f1f1;">
+
 
         <header class="top">
              <span style="position:relative;top:10px;left:10px"><b>ExamSoft</b><prep>&nbsp;&nbsp; Rizvi College</span>
         </header>
         <form id="Students" action="/StudentZone" method="POST" name="Student">
             <div style="margin-left:50%">
-                <span >Students zone</span>
+                <span style="position:;">Students zone</span>
                <select name="Branch">
                     <option display:none value="" disabled selected hidden><p>Branch</p></option>
                     <option value="Cs">CS</option>
@@ -194,10 +209,12 @@
                 </datalist>
                 <input type="text" placeholder="Full Name" name="Name">
                 <input type="text" placeholder="Roll Number" name="Roll">
+
                 <button type="submit">Login</button>
+
             </div>
         </form>
-
+        <p id="error">{% block p %} {% endblock %}</p>
         <form action="/ProfessorZone" method="POST" name="Professor">
             <div>
                 <span>Professors zone</span>
@@ -208,5 +225,6 @@
             </div>
         </form>
         <small class="small">A Siddhant shah productions<br>Done is better than perfect</small>
+
     </body>
 </html>

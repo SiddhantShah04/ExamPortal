@@ -52,7 +52,7 @@ def ProfessorZone():
         for i in range(len(E)):
             if(E[i][0] == Email and P[i][0] == Password):
                 return redirect(url_for('Email',Email=Email))
-        return("<h1>invalid Email or password</h4>")
+        return render_template("invalid.html")
     else:
         return render_template("Professors.html")
 
