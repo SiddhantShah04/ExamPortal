@@ -1,10 +1,12 @@
 from flask import Flask,render_template,request,redirect,url_for,session,send_from_directory,send_file
-import sqlite3 as db
 import os,shutil
 import csv
 import json
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session,sessionmaker
 
-
+engine = create_engine(os.getenv("DATABASE_URL"))
+db = scoped_session(sessionmaker(bind=engine))
 
 app = Flask(__name__)
 app.secret_key = "E"
@@ -21,17 +23,16 @@ def index():
 def Registration():
     if(request.method == "POST"):
         Email = request.form.get("EMAIL")
-        password = request.form.get("PASSWORD")
-        if(Email == ""  or  password == ""):
+        Password = request.form.get("PASSWORD")
+        if(Email == ""  or  Password == ""):
             return("<h2>Are stupid or what</h2>?")
-        con = db.connect('registration.db')
-        cur = con.cursor()
         try:
-            cur.execute('create table Registration(Email text,Password text)')
+            db.execute('create table Registration(Email text,Password text)')
         except:
             pass
-        cur.execute('INSERT INTO Registration VALUES (?,?)',(Email,password))
-        con.commit()
+        #db.execute("insert into employee(name,address) values(:name,:address)" ,{"name":name,"address":address})
+        db.execute("INSERT INTO Registration(Email,Password) VALUES(:Email,:Password)",{"Email":Email,"Password":Password})
+        db.commit()
         return redirect(url_for("Registration"))
     else:
         return render_template("index.html")
@@ -43,11 +44,10 @@ def ProfessorZone():
         Email = request.form.get("Email")
         session['Email']=Email
         Password = request.form.get("Password")
-        con = db.connect('registration.db')
-        cur = con.cursor()
-        rows = cur.execute("select Email from Registration")
+
+        rows = db.execute("select Email from Registration")
         E = rows.fetchall()
-        rows = cur.execute("select Password from Registration")
+        rows = db.execute("select Password from Registration")
         P = rows.fetchall()
         for i in range(len(E)):
             if(E[i][0] == Email and P[i][0] == Password):
@@ -59,10 +59,9 @@ def ProfessorZone():
 @app.route('/Email/<string:Email>',methods=["POST","GET"])
 def Email(Email):
     if('Email' in session):
-        con = db.connect('Exam.db')
-        cur = con.cursor()
+
         try:
-            rows = cur.execute(f'select Branch,Sem,SubjectName  from "Exam" where Email = "{Email}" ')
+            rows = db.execute(f'select Branch,Sem,SubjectName  from "Exam" where Email = "{Email}" ')
             E = rows.fetchall()
         except:
             E=""
@@ -95,14 +94,13 @@ def uploader(Email):
         Sem = request.form.get("Sem")
         #Subject = (request.form.get("Subject").replace(" ",""))
         Subject = (request.form.get("Subject"))
-        con2 = db.connect('Exam.db')
-        cur2 = con2.cursor()
+
         try:
-            cur2.execute('create table Exam(Branch char(2),sem int(2),SubjectName varchar(100),FileName varchar(100),Email varchar(225))')
+            db.execute('create table Exam(Branch char(2),sem int(2),SubjectName varchar(100),FileName varchar(100),Email varchar(225))')
         except:
             print()
-        cur2.execute('insert into Exam values(?,?,?,?,?)',(Branch,Sem,Subject,(f.filename),Email))
-        con2.commit()
+        db.execute('insert into Exam values(?,?,?,?,?)',(Branch,Sem,Subject,(f.filename),Email))
+        db.commit()
         return redirect(url_for('Email',Email=Email))
     else:
         return render_template("index.html")
@@ -111,9 +109,8 @@ def uploader(Email):
 def delete(r):
     if('Email' in session):
         Email = session['Email']
-        con = db.connect('Exam.db')
-        cur = con.cursor()
-        rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{r}" ')
+
+        rows =db.execute(f'select FileName  from "Exam" where SubjectName = "{r}" ')
         E = rows.fetchone()
         R = E[0]
         cur.execute(f'DELETE FROM "Exam" WHERE SubjectName = "{r}" ')
@@ -140,10 +137,9 @@ def StudentZone():
     Roll = request.form.get("Roll")
 
     Subject = (request.form.get("Subject"))
-    con = db.connect('Exam.db')
-    cur = con.cursor()
 
-    rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{Subject}" ')
+
+    rows = db.execute(f'select FileName  from "Exam" where SubjectName = "{Subject}" ')
 
     E = rows.fetchone()
     R = E[0]
