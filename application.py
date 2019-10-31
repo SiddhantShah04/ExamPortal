@@ -81,7 +81,7 @@ def Create_Question(Email):
 def logout():
     if('Email' in session):
         session.pop('Email',None)
-        return render_template("index.html")
+        return redirect(url_for("index"))
     else:
         return("<h4>You already logout</h4>")
 
