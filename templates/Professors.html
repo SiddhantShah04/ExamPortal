@@ -6,6 +6,7 @@
 
         <script>
 
+
         </script>
     <style>
         .Professors{
@@ -13,11 +14,11 @@
             margin-top:-2.2%;
             margin-left:-0.6%;
             float:top;
-            font-size:40px;
+            font-size:32px;
             background-color:brown;
             color:white;
             font-family:Arial;
-            width:25vw;
+            width:22vw;
             height:100vh;
         }
         .Professors>h6>a{
@@ -64,8 +65,8 @@
         .div{
                 position: relative;
                 background-color:white;
-                margin-top:1.5%;
-                margin-left:25%;
+                margin-top:1%;
+                margin-left:22%;
 
                 border-color: blue;
             }
@@ -74,50 +75,66 @@
                 margin-top:1%;
                 width:100%;
                 height:45%;
-
+                font-size:15px;
                 font-family: sans-serif;
             }
             .button{
                 position:relative;
-                border-radius:8px;
-                margin-top:5%;
-                margin-bottom:5%;
-                border:0px;
-                width:150px;
-                height:40px;
-                font-size:18px;
+                margin-top:1%;
+                margin-bottom:1%;
+                border:1px;
+                width:80px;
+                height:22px;
+                margin-left:0%;
+                font-size:15px;
                 text-align:center;
                 color:white;
-                background-color:green;
-
     }
+            #table th {
 
+                border: 1px solid #ddd;
+                background-color:green;
+                padding:1%;
+                color:white;
+                 font-weight: normal;
+            }
+            #table tr{
+                background-color:blue;
+                color:white;
+                padding:5%;
+                text-align:center;
+            }
+
+
+    .table tr:nth-child(even){background-color: #f2f2f2;}
     </style>
     </head>
     <body style= "background:lightblue;">
-         <header class="logout" ><a href="/logout" style="padding-top:0.5%;">Logout</a></header>
+
+
+         <header class="logout" ><a href="/logout" style="padding-top:0.7%;color:red">Logout</a></header>
         <div class="Professors">
             <span style="position:relative;top:20px;left:14px;"><b>Professors zone</b></span>
                 <h6><a  href="/{{Email}}/Create_Question" style="cursor:pointer;">Upload a file</a></h6>
                 <h6><a  href="/static/CsvFormat.png" style="cursor:pointer;">See CSV format</a></h6>
         </div>
             <div class="div" id="div">
-            <h1 style="margin-left:38%;color:blue;font-family: sans-serif;"> Uploaded papers</h1>
-            <table border="1" style="border-collapse: collapse;">
-                    <th><h2>Branch</h2></th>
-                    <th><h2>Semeter</h2></th>
-                    <th><h2>Subject</h2></th>
-                    <th><h2>Delete</h2></th>
-                    <th><h2>Deploy</h2></th></span>
-                    <th><h2>See Result</h2></th></span>
+            <table style="border-collapse: collapse;" id="table">
+                    <th><span>Branch</span></th>
+                    <th><span>Semeter</span></th>
+                    <th><span>Subject</span></th>
+                    <th><span>Status</span></th>
+                    <th><span>Options</span></th></span>
                 {% for r in E %}
                 <tr align="center" style="font-size: 25px;">
                     <td>{{r[0]}}</td>
                     <td>{{r[1]}}</td>
                     <td>{{r[2]}}</td>
-                    <td><a href="/{{r[2]}}/delete"><button type="submit" class="button">Delete</button></form></td>
-                    <td><a href="/{{Email}}/{{r[2]}}/Deploy"><button type="submit" class="button">Deploy</button></a></td>
-                    <td><a href="/{{Email}}/{{r[2]}}/SeeResult"><button type="submit" class="button">See Result</button></a></td>
+
+                    <td><a  href="/{{Email}}/{{r[2]}}/Deploy"><button type="submit" class="button" style="background-color:red;" value="" id="Active">Activate</button></a></td>
+                    <td><a href="/{{r[2]}}/delete"><button type="submit" class="button" style="background-color:red">Delete</button>
+
+                    <a href="/{{Email}}/{{r[2]}}/SeeResult"><button type="submit" class="button" style="background-color:#0000CC;"><span>Result </span></button></a></td>
                 </tr>
                 {% endfor %}
             </table>

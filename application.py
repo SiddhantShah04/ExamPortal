@@ -22,6 +22,7 @@ def index():
 @app.route("/Registration",methods=["POST","GET"])
 def Registration():
     if(request.method == "POST"):
+
         Email = request.form.get("EMAIL")
         Password = request.form.get("PASSWORD")
         if(Email == ""  or  Password == ""):
@@ -29,10 +30,12 @@ def Registration():
         try:
             db.execute('create table Registration(Email text,Password text)')
         except:
-            pass
+            db.rollback()
         #db.execute("insert into employee(name,address) values(:name,:address)" ,{"name":name,"address":address})
+
         db.execute("INSERT INTO Registration(Email,Password) VALUES(:Email,:Password)",{"Email":Email,"Password":Password})
         db.commit()
+
         return redirect(url_for("Registration"))
     else:
         return render_template("index.html")
@@ -60,11 +63,9 @@ def ProfessorZone():
 def Email(Email):
     if('Email' in session):
 
-        try:
-            rows = db.execute(f'select Branch,Sem,SubjectName  from "Exam" where Email = "{Email}" ')
-            E = rows.fetchall()
-        except:
-            E=""
+        rows = db.execute('select Branch,Sem,SubjectName  from "Exam" where email=(:email)',{"email":Email})
+        E = rows.fetchall()
+
         return render_template("Professors.html",Email=Email,E=E)
     else:
         return render_template("index.html")
@@ -76,9 +77,9 @@ def Create_Question(Email):
     else:
         return render_template("index.html")
 
-
 @app.route("/logout")
 def logout():
+    db.commit()
     if('Email' in session):
         session.pop('Email',None)
         return redirect(url_for("index"))
@@ -93,14 +94,33 @@ def uploader(Email):
         Branch = request.form.get("Branch")
         Sem = request.form.get("Sem")
         #Subject = (request.form.get("Subject").replace(" ",""))
-        Subject = (request.form.get("Subject"))
+        SubjectName = request.form.get("Subject")
+
+        FileName = (f.filename)
+
+        #db.execute('create table "ActiveSubject"(Branch text,Sem text,SubjectName text,FileName text,Email text)')
+
+
+        #db.execute("insert into employee(name,address) values(:name,:address)" ,{"name":name,"address":address})
 
         try:
-            db.execute('create table Exam(Branch char(2),sem int(2),SubjectName varchar(100),FileName varchar(100),Email varchar(225))')
+            db.execute('insert into "Exam" (Branch,Sem,SubjectName,FileName,Email) values(:Branch,:Sem,:SubjectName,:FileName,:Email)',
+                {"Branch":Branch,"Sem":Sem,"SubjectName":SubjectName,"FileName":FileName,"Email":Email})
+            db.commit()
         except:
-            print()
-        db.execute('insert into Exam values(?,?,?,?,?)',(Branch,Sem,Subject,(f.filename),Email))
+            db.rollback()
+            #return("<h1>Exam with this Subject Name already exists</h1>")
+        db.execute('create table ":SubjectName" (Question text,option1 text,option2 text,option3 text,option4 text,answer text,time SMALLINT)',
+        {"SubjectName":SubjectName})
         db.commit()
+        with open(f"UploadFiles/{FileName}", 'r') as csvfile:
+            # creating a csv reader object
+            csvreader = csv.reader(csvfile)
+
+            for i in csvreader:
+                db.execute('insert into ":SubjectName" values(:Question,:option1,:option2,:option3,:option4,:answer,:time)',
+                {"SubjectName":SubjectName,"Question":i[0],"option1":i[1],"option2":i[2],"option3":i[3],"option4":i[4],"answer":i[5],"time":i[6]})
+            db.commit()
         return redirect(url_for('Email',Email=Email))
     else:
         return render_template("index.html")
@@ -110,19 +130,13 @@ def delete(r):
     if('Email' in session):
         Email = session['Email']
 
-        rows =db.execute(f'select FileName  from "Exam" where SubjectName = "{r}" ')
-        E = rows.fetchone()
-        R = E[0]
-        cur.execute(f'DELETE FROM "Exam" WHERE SubjectName = "{r}" ')
-        con.commit()
-        try:
-            os.remove(f'Deploy/{R}')
-        except:
-            os.remove(f'UploadFiles/{R}')
-        try:
-            os.remove(f"Results/{R}.csv")
-        except:
-            pass
+        #db.execute("insert into ActiveSubject(Subject) values(:SubjectName)" ,{"SubjectName":r})
+        #rows = db.execute('select Branch,Sem,SubjectName  from "Exam" where email=(:email)',{"email":Email})
+
+        db.execute('DELETE FROM "Exam" WHERE subjectname = (:subjectname)',{"subjectname":r})
+        db.execute('DELETE FROM "activesubject" WHERE "subject" =(:subjectname)',{"subjectname":r})
+        db.execute('drop table ":subjectname"',{"subjectname":r})
+        db.commit()
 
         return redirect(url_for('Email',Email=Email))
     else:
@@ -137,7 +151,6 @@ def StudentZone():
     Roll = request.form.get("Roll")
 
     Subject = (request.form.get("Subject"))
-
 
     rows = db.execute(f'select FileName  from "Exam" where SubjectName = "{Subject}" ')
 
@@ -230,16 +243,14 @@ def SeeResult(Email,Subject):
 
 @app.route("/<string:Email>/<string:r>/Deploy",methods=["POST","GET"])
 def Deploy(Email,r):
-    con = db.connect('Exam.db')
-    cur = con.cursor()
-    rows = cur.execute(f'select FileName  from "Exam" where SubjectName = "{r}" ')
-    E = rows.fetchone()
-    R = E[0]
+    #db.execute('create table ActiveSubject(Subject text)')
+    #db.execute("insert into employee(name,address) values(:name,:address)" ,{"name":name,"address":address})
     try:
-        shutil.move(f'UploadFiles/{R}', 'Deploy')
-        return redirect(url_for('Email',Email=Email))
+        db.execute("insert into ActiveSubject(Subject) values(:SubjectName)" ,{"SubjectName":r})
+        db.commit()
     except:
-        return("<h1 style='text-align:center;'>Already deployed!</h1>")
+        db.rollback()
+        return("<h1 style='text-align:center;'>Already activated!</h1>")
+    return redirect(url_for('Email',Email=Email))
 
-
-
+# export DATABASE_URL=postgres://lrwrwexhxcpdec:0b3c469d7d2e697c0dcd67df8da24c8bbf62f5456d46733adcb141a9f7db84d4@ec2-54-83-9-36.compute-1.amazonaws.com:5432/db1hmn6a1q83g1
