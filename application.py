@@ -101,11 +101,6 @@ def uploader(Email):
 
         FileName = (f.filename)
 
-        #db.execute('create table "ActiveSubject"(Branch text,Sem text,SubjectName text,FileName text,Email text)')
-
-
-        #db.execute("insert into employee(name,address) values(:name,:address)" ,{"name":name,"address":address})
-
         try:
             db.execute('insert into "Exam" (Branch,Sem,SubjectName,FileName,Email) values(:Branch,:Sem,:SubjectName,:FileName,:Email)',
                 {"Branch":Branch,"Sem":Sem,"SubjectName":SubjectName,"FileName":FileName,"Email":Email})
@@ -132,13 +127,13 @@ def uploader(Email):
 def delete(r):
     if('Email' in session):
         Email = session['Email']
-
         #db.execute("insert into ActiveSubject(Subject) values(:SubjectName)" ,{"SubjectName":r})
-        #rows = db.execute('select Branch,Sem,SubjectName  from "Exam" where email=(:email)',{"email":Email})
-
+        rows = db.execute('select FileName  from "Exam" WHERE subjectname = (:subjectname)',{"subjectname":r})
+        t=rows.fetchone()
         db.execute('DELETE FROM "Exam" WHERE subjectname = (:subjectname)',{"subjectname":r})
         db.execute('DELETE FROM "activesubject" WHERE "subject" =(:subjectname)',{"subjectname":r})
         db.execute('drop table ":subjectname"',{"subjectname":r})
+        os.remove(f'UploadFiles/{t[0]}')
         db.commit()
 
         return redirect(url_for('Email',Email=Email))
@@ -158,10 +153,6 @@ def StudentZone():
     E = rows.fetchall()
     l=len(E)
 
-    #db.execute('create table ":SubjectName" (Question text,option1 text,option2 text,option3 text,option4 text,answer text,time SMALLINT)',
-    #{"SubjectName":SubjectName})
-
-
     if(f'{Roll}' in session):
         return("<h1>already taken</h1>")
     session[f"{Roll}"] = 0
@@ -177,11 +168,6 @@ def Next(Roll,Subject):
     rows = db.execute('select Question,option1,option2,option3,option4,time,answer  from ":subject" ',{"subject":s})
     E = rows.fetchall()
     l=len(E)
-
-    #db.execute('insert into "Exam" (Branch,Sem,SubjectName,FileName,Email) values(:Branch,:Sem,:SubjectName,:FileName,:Email)',
-    #{"Branch":Branch,"Sem":Sem,"SubjectName":SubjectName,"FileName":FileName,"Email":Email})
-
-    #return(E[0][6])
     QTaken = request.form.get("o")
     if(QTaken==E[session[f"{Roll}"]][6]):
         try:
@@ -205,80 +191,6 @@ def Next(Roll,Subject):
             session.pop(f'{Roll}',None)
             return("ok2")
         return render_template("Paper.html",Subject=Subject,rows=rows,Roll=Roll,l=l,s=s)
-
-"""
-    for i in E:
-        for j in i:
-            return(j)
-
-
-
-    rows = db.execute('select FileName  from "Exam" where SubjectName = "{Subject}" ')
-
-    E = rows.fetchone()
-    R = E[0]
-    with open(f"Deploy/{R}", 'r') as csvfile:
-    # creating a csv reader object
-        csvreader = csv.reader(csvfile)
-        con2 = db.connect(f'{Subject}.db')
-        cur2 = con2.cursor()
-        try:
-            cur2.execute(f'create table "{Roll}"(Question text,option1 text,option2 text,option3 text,option4 text,answer text,time int(2))')
-        except:
-            print()
-        for i in csvreader:
-            try:
-                cur2.execute(f'insert into "{Roll}" values(?,?,?,?,?,?,?)',(i[0],i[1],i[2],i[3],i[4],i[5],i[6]))
-            except:
-                return("<h1 style='text-align:center;'>Roll Number is<br>Already taken!</h1>")
-        con2.commit()
-        return redirect(url_for("Next",Roll=Roll,Subject=Subject))
-
-@app.route("/<string:Subject>/<int:Roll>/Next",methods = ["POST","GET"])
-def Next(Roll,Subject):
-    QNo = session['Q']
-    con2 = db.connect(f'{Subject}.db')
-    cur2 = con2.cursor()
-    rows1 = cur2.execute(f'select answer from "{Roll}"')
-    E1 = rows1.fetchall()
-    rows = E1[0]
-    #return("ok")
-    rows = cur2.execute(f'select Question,option1,option2,option3,option4,time from "{Roll}"')
-    E = rows.fetchall()
-    r=E[QNo-1]
-
-    QTaken = request.form.get("O")
-    try:
-        cur2.execute(f'alter table "{Roll}" add WR text')
-        cur2.execute(f'alter table "{Roll}" add OTaken text')
-    except:
-        pass
-    cur2.execute(f'UPDATE "{Roll}" SET "OTaken"="{QTaken}" WHERE "Question" = "{r[0]}"')
-    con2.commit()
-    answer = cur2.execute(f'select answer from "{Roll}" where "Question" = "{r[0]}"')
-    A = answer.fetchone()
-    if(A[0] == QTaken ):
-        cur2.execute(f'UPDATE "{Roll}" SET "WR"="R" WHERE "Question" = "{r[0]}"')
-    else:
-        cur2.execute(f'UPDATE "{Roll}" SET "WR"="W" WHERE "Question" = "{r[0]}"')
-    con2.commit()
-    session['Q'] = session['Q'] + 1
-    try:
-        rows = E[QNo]
-    except:
-        E2 = cur2.execute(f'SELECT COUNT(WR) FROM "{Roll}"  WHERE "WR" = "R"')
-        E2 = E2.fetchone()
-        R = E2[0]
-        try:
-            cur2.execute('Create table Paper(Roll,WCount)')
-        except:
-            pass
-        cur2.execute('insert into Paper values(?,?)',(Roll,R))
-        con2.commit()
-
-        return("<h1 style='text-align:center;'>Exam Done<br>Leave the premises!</h1>")
-    return render_template("ExamZone.html",Subject=Subject,rows=rows,Roll=Roll)
-"""
 
 @app.route("/<string:Email>/<string:Subject>/SeeResult",methods=["POST","GET"])
 def SeeResult(Email,Subject):
@@ -304,8 +216,6 @@ def SeeResult(Email,Subject):
 
 @app.route("/<string:Email>/<string:r>/Deploy",methods=["POST","GET"])
 def Deploy(Email,r):
-    #db.execute('create table ActiveSubject(Subject text)')
-    #db.execute("insert into employee(name,address) values(:name,:address)" ,{"name":name,"address":address})
     try:
         db.execute("insert into ActiveSubject(Subject) values(:SubjectName)" ,{"SubjectName":r})
         db.commit()
