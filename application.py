@@ -11,9 +11,12 @@ db = scoped_session(sessionmaker(bind=engine))
 app = Flask(__name__)
 app.secret_key = "E"
 
+
+
 app.jinja_env.auto_reload = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
 
 @app.route("/")
 def index():
@@ -145,14 +148,49 @@ def delete(r):
 
 @app.route("/StudentZone",methods=["POST","GET"])
 def StudentZone():
-    i=0
-    session['Q']=i
     Branch = request.form.get("Branch")
     Roll = request.form.get("Roll")
+    Subject = request.form.get("Subject")
+    #rows = db.execute('select Branch,Sem,SubjectName  from "Exam" where email=(:email)',{"email":Email})
+    rows = db.execute('select Question,option1,option2,option3,option4,time  from ":subject" ',{"subject":Subject})
+    E = rows.fetchall()
+    l=len(E)
+    if(f'{Roll}' in session):
+        return("<h1>already taken</h1>")
+    session[f"{Roll}"] = 0
+    s=1
+    rows = E[session[f"{Roll}"]]
+    return render_template("Paper.html",Subject=Subject,rows=rows,Roll=Roll,l=l,s=s)
 
-    Subject = (request.form.get("Subject"))
+@app.route("/<string:Subject>/<int:Roll>/Next",methods = ["POST","GET"])
+def Next(Roll,Subject):
+    s = f'{Subject}'
+    rows = db.execute('select Question,option1,option2,option3,option4,time  from ":subject" ',{"subject":s})
+    E = rows.fetchall()
+    l=len(E)
+    if(f"{Roll}" in session):
+        session[f"{Roll}"] = session[f"{Roll}"]  + 1
+        s=session[f"{Roll}"]+1
+        try:
+            rows = E[session[f"{Roll}"]]
+        except:
+            session.pop(f'{Roll}',None)
+            return("ok")
+        return render_template("Paper.html",Subject=Subject,rows=rows,Roll=Roll,l=l,s=s)
 
-    rows = db.execute(f'select FileName  from "Exam" where SubjectName = "{Subject}" ')
+
+
+
+
+
+"""
+    for i in E:
+        for j in i:
+            return(j)
+
+
+
+    rows = db.execute('select FileName  from "Exam" where SubjectName = "{Subject}" ')
 
     E = rows.fetchone()
     R = E[0]
@@ -217,7 +255,7 @@ def Next(Roll,Subject):
 
         return("<h1 style='text-align:center;'>Exam Done<br>Leave the premises!</h1>")
     return render_template("ExamZone.html",Subject=Subject,rows=rows,Roll=Roll)
-
+"""
 @app.route("/<string:Email>/<string:Subject>/SeeResult",methods=["POST","GET"])
 def SeeResult(Email,Subject):
     con2 = db.connect(f'{Subject}.db')
