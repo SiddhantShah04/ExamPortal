@@ -151,10 +151,17 @@ def StudentZone():
     Branch = request.form.get("Branch")
     Roll = request.form.get("Roll")
     Subject = request.form.get("Subject")
+    SubjectResult=f'{Subject}'+'Result'
+
     #rows = db.execute('select Branch,Sem,SubjectName  from "Exam" where email=(:email)',{"email":Email})
     rows = db.execute('select Question,option1,option2,option3,option4,time  from ":subject" ',{"subject":Subject})
     E = rows.fetchall()
     l=len(E)
+
+    #db.execute('create table ":SubjectName" (Question text,option1 text,option2 text,option3 text,option4 text,answer text,time SMALLINT)',
+    #{"SubjectName":SubjectName})
+
+
     if(f'{Roll}' in session):
         return("<h1>already taken</h1>")
     session[f"{Roll}"] = 0
@@ -165,9 +172,30 @@ def StudentZone():
 @app.route("/<string:Subject>/<int:Roll>/Next",methods = ["POST","GET"])
 def Next(Roll,Subject):
     s = f'{Subject}'
-    rows = db.execute('select Question,option1,option2,option3,option4,time  from ":subject" ',{"subject":s})
+    SubjectResult=f'{Subject}'+'Result'
+
+    rows = db.execute('select Question,option1,option2,option3,option4,time,answer  from ":subject" ',{"subject":s})
     E = rows.fetchall()
     l=len(E)
+
+    #db.execute('insert into "Exam" (Branch,Sem,SubjectName,FileName,Email) values(:Branch,:Sem,:SubjectName,:FileName,:Email)',
+    #{"Branch":Branch,"Sem":Sem,"SubjectName":SubjectName,"FileName":FileName,"Email":Email})
+
+    #return(E[0][6])
+    QTaken = request.form.get("o")
+    if(QTaken==E[session[f"{Roll}"]][6]):
+        try:
+            i=1
+            db.execute('insert into ":SubjectName" ("Roll","Right") values(:Roll,:i)',{"SubjectName":SubjectResult,"Roll":Roll,"i":i})
+            db.commit()
+        except:
+            db.rollback()
+            rows = db.execute('select "Right" from ":SubjectName" where "Roll"=:Roll',{"SubjectName":SubjectResult,"Roll":Roll})
+            i=(rows.fetchone())[0]
+            i=i+1
+            db.execute('UPDATE ":SubjectName" SET "Right" = :i WHERE "Roll" = :Roll',{"SubjectName":SubjectResult,"i":i,"Roll":Roll})
+            db.commit()
+
     if(f"{Roll}" in session):
         session[f"{Roll}"] = session[f"{Roll}"]  + 1
         s=session[f"{Roll}"]+1
@@ -175,13 +203,8 @@ def Next(Roll,Subject):
             rows = E[session[f"{Roll}"]]
         except:
             session.pop(f'{Roll}',None)
-            return("ok")
+            return("ok2")
         return render_template("Paper.html",Subject=Subject,rows=rows,Roll=Roll,l=l,s=s)
-
-
-
-
-
 
 """
     for i in E:
@@ -256,12 +279,12 @@ def Next(Roll,Subject):
         return("<h1 style='text-align:center;'>Exam Done<br>Leave the premises!</h1>")
     return render_template("ExamZone.html",Subject=Subject,rows=rows,Roll=Roll)
 """
+
 @app.route("/<string:Email>/<string:Subject>/SeeResult",methods=["POST","GET"])
 def SeeResult(Email,Subject):
-    con2 = db.connect(f'{Subject}.db')
-    cur2 = con2.cursor()
+    SubjectResult=f'{Subject}'+'Result'
     try:
-        E = cur2.execute('select * from Paper order by Roll')
+        E=db.execute('select * from ":SubjectName" order by "Roll"',{"SubjectName":SubjectResult})
     except:
         return("<h1 style='text-align:center;'>Exam is not done<br>Yet!</h1>")
     R = E.fetchall()
