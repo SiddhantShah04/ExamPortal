@@ -170,7 +170,14 @@ def StudentZone():
         session.pop(f'{Roll}',None)
         return("<h1>already taken</h1>")
     session[f"{Roll}"] = 0
-    s=1
+    s=0
+    db.execute('create table if not exists ":SubjectName"("Roll" smallint not null,"Right" smallint not null)',{"SubjectName":SubjectResult})
+    i=0
+    try:
+        db.execute('insert into ":SubjectName" ("Roll","Right") values(:Roll,:i)',{"SubjectName":SubjectResult,"Roll":Roll,"i":i})
+        db.commit()
+    except:
+        db.rollback()
     rows = E[session[f"{Roll}"]]
     return render_template("Paper.html",Subject=Subject,rows=rows,Roll=Roll,l=l,s=s)
 
@@ -182,19 +189,13 @@ def Next(Roll,Subject):
     E = rows.fetchall()
     l=len(E)
     QTaken = request.form.get("o")
-    db.execute('create table if not exists ":SubjectName"("Roll" smallint not null,"Right" smallint not null)',{"SubjectName":SubjectResult})
+
     if(QTaken==E[session[f"{Roll}"]][6]):
-        try:
-            i=1
-            db.execute('insert into ":SubjectName" ("Roll","Right") values(:Roll,:i)',{"SubjectName":SubjectResult,"Roll":Roll,"i":i})
-            db.commit()
-        except:
-            db.rollback()
-            rows = db.execute('select "Right" from ":SubjectName" where "Roll"=:Roll',{"SubjectName":SubjectResult,"Roll":Roll})
-            i=(rows.fetchone())[0]
-            i=i+1
-            db.execute('UPDATE ":SubjectName" SET "Right" = :i WHERE "Roll" = :Roll',{"SubjectName":SubjectResult,"i":i,"Roll":Roll})
-            db.commit()
+        rows = db.execute('select "Right" from ":SubjectName" where "Roll"=:Roll',{"SubjectName":SubjectResult,"Roll":Roll})
+        i=(rows.fetchone())[0]
+        i=i+1
+        db.execute('UPDATE ":SubjectName" SET "Right" = :i WHERE "Roll" = :Roll',{"SubjectName":SubjectResult,"i":i,"Roll":Roll})
+        db.commit()
 
     if(f"{Roll}" in session):
         session[f"{Roll}"] = session[f"{Roll}"]  + 1
@@ -240,7 +241,7 @@ def Deploy(Email,r):
 
 @app.errorhandler(500)
 def error_500(exception):
-    return ("<h1>Something went wrong.....try refreshing the page</h1>")
+    return ("<h1>Something went wrong.....try refreshing the page or Go back to previous page</h1>")
 
 
 # export DATABASE_URL=postgres://axynzjdefwmyeo:e87f02858c1fbc56ea43154a07967f3d68c6e4ad7766daeee3eccc352380caa1@ec2-174-129-253-62.compute-1.amazonaws.com:5432/dcmaleb1aubmap
