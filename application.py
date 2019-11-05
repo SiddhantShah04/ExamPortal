@@ -19,7 +19,9 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    rows=db.execute('select "subject" from activesubject')
+    E=rows.fetchall()
+    return render_template("index.html",E=E)
 
 @app.route("/Registration",methods=["POST","GET"])
 def Registration():
@@ -70,7 +72,6 @@ def Email(Email):
 
         rows = db.execute('select Branch,Sem,SubjectName  from "Exam" where email=(:email)',{"email":Email})
         E = rows.fetchall()
-
         return render_template("Professors.html",Email=Email,E=E)
     else:
         return render_template("index.html")
@@ -149,15 +150,14 @@ def delete(r):
         return redirect(url_for('Email',Email=Email))
     else:
         return render_template("index.html")
-
-
 @app.route("/StudentZone",methods=["POST","GET"])
 def StudentZone():
-    Branch = request.form.get("Branch")
+
     Roll = request.form.get("Roll")
     Subject = request.form.get("Subject")
     SubjectResult=f'{Subject}'+'Result'
-
+    if(Roll== "" or Subject==""):
+        return render_template("invalidS.html")
     #rows = db.execute('select Branch,Sem,SubjectName  from "Exam" where email=(:email)',{"email":Email})
     try:
         rows = db.execute('select Question,option1,option2,option3,option4,time  from ":subject" ',{"subject":Subject})
@@ -242,6 +242,3 @@ def Deploy(Email,r):
 @app.errorhandler(500)
 def error_500(exception):
     return ("<h1>Something went wrong.....try refreshing the page or Go back to previous page</h1>")
-
-
-# export DATABASE_URL=postgres://axynzjdefwmyeo:e87f02858c1fbc56ea43154a07967f3d68c6e4ad7766daeee3eccc352380caa1@ec2-174-129-253-62.compute-1.amazonaws.com:5432/dcmaleb1aubmap
