@@ -56,7 +56,7 @@ def ProfessorZone():
             rows = db.execute("select Password from Registration")
             P = rows.fetchall()
         except:
-            db.rollback()
+            db.roll
         for i in range(len(E)):
             if(E[i][0] == Email and P[i][0] == Password):
                 return redirect(url_for('Email',Email=Email))
