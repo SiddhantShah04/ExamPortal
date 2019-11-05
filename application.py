@@ -5,7 +5,7 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session,sessionmaker
 
-engine = create_engine("postgres://axynzjdefwmyeo:e87f02858c1fbc56ea43154a07967f3d68c6e4ad7766daeee3eccc352380caa1@ec2-174-129-253-62.compute-1.amazonaws.com:5432/dcmaleb1aubmap")
+engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 app = Flask(__name__)
@@ -242,4 +242,4 @@ def Deploy(Email,r):
         return("<h1 style='text-align:center;'>Already activated!</h1>")
     return redirect(url_for('Email',Email=Email))
 
-# export DATABASE_URL=postgres://lrwrwexhxcpdec:0b3c469d7d2e697c0dcd67df8da24c8bbf62f5456d46733adcb141a9f7db84d4@ec2-54-83-9-36.compute-1.amazonaws.com:5432/db1hmn6a1q83g1
+# export DATABASE_URL=postgres://axynzjdefwmyeo:e87f02858c1fbc56ea43154a07967f3d68c6e4ad7766daeee3eccc352380caa1@ec2-174-129-253-62.compute-1.amazonaws.com:5432/dcmaleb1aubmap
