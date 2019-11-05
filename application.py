@@ -238,4 +238,9 @@ def Deploy(Email,r):
         return("<h1 style='text-align:center;'>Already activated!</h1>")
     return redirect(url_for('Email',Email=Email))
 
+@app.errorhandler(500)
+def error_500(exception):
+    return ("<h1>Something went wrong.....try refreshing the page</h1>")
+
+
 # export DATABASE_URL=postgres://axynzjdefwmyeo:e87f02858c1fbc56ea43154a07967f3d68c6e4ad7766daeee3eccc352380caa1@ec2-174-129-253-62.compute-1.amazonaws.com:5432/dcmaleb1aubmap
