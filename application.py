@@ -136,7 +136,10 @@ def delete(r):
         db.execute('DELETE FROM "activesubject" WHERE "subject" =(:subjectname)',{"subjectname":r})
         db.execute('drop table ":subjectname"',{"subjectname":r})
         db.execute('drop table if exists ":SubjectResult"',{"SubjectResult":SubjectResult})
-        os.remove(f'UploadFiles/{t[0]}')
+        try:
+            os.remove(f'UploadFiles/{t[0]}')
+        except:
+            pass
         try:
             os.remove(f'Results/{r}.csv')
         except:
