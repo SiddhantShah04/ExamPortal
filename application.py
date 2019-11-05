@@ -161,9 +161,12 @@ def StudentZone():
     SubjectResult=f'{Subject}'+'Result'
 
     #rows = db.execute('select Branch,Sem,SubjectName  from "Exam" where email=(:email)',{"email":Email})
-    rows = db.execute('select Question,option1,option2,option3,option4,time  from ":subject" ',{"subject":Subject})
-    E = rows.fetchall()
-    l=len(E)
+    try:
+        rows = db.execute('select Question,option1,option2,option3,option4,time  from ":subject" ',{"subject":Subject})
+        E = rows.fetchall()
+        l=len(E)
+    except:
+        db.rollback()
 
     if(f'{Roll}' in session):
         return("<h1>already taken</h1>")
