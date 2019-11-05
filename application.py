@@ -5,7 +5,7 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session,sessionmaker
 
-engine = create_engine(os.getenv("DATABASE_URL"))
+engine = create_engine("postgres://axynzjdefwmyeo:e87f02858c1fbc56ea43154a07967f3d68c6e4ad7766daeee3eccc352380caa1@ec2-174-129-253-62.compute-1.amazonaws.com:5432/dcmaleb1aubmap")
 db = scoped_session(sessionmaker(bind=engine))
 
 app = Flask(__name__)
