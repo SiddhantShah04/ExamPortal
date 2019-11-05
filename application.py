@@ -58,7 +58,8 @@ def ProfessorZone():
         for i in range(len(E)):
             if(E[i][0] == Email and P[i][0] == Password):
                 return redirect(url_for('Email',Email=Email))
-        return render_template("invalid.html")
+            else:
+                return render_template("invalid.html")
     else:
         return render_template("Professors.html")
 
@@ -126,6 +127,7 @@ def uploader(Email):
 @app.route("/<string:r>/delete",methods=["POST","GET"])
 def delete(r):
     if('Email' in session):
+        SubjectResult=f'{r}'+'Result'
         Email = session['Email']
         #db.execute("insert into ActiveSubject(Subject) values(:SubjectName)" ,{"SubjectName":r})
         rows = db.execute('select FileName  from "Exam" WHERE subjectname = (:subjectname)',{"subjectname":r})
@@ -133,7 +135,12 @@ def delete(r):
         db.execute('DELETE FROM "Exam" WHERE subjectname = (:subjectname)',{"subjectname":r})
         db.execute('DELETE FROM "activesubject" WHERE "subject" =(:subjectname)',{"subjectname":r})
         db.execute('drop table ":subjectname"',{"subjectname":r})
+        db.execute('drop table if exists ":SubjectResult"',{"SubjectResult":SubjectResult})
         os.remove(f'UploadFiles/{t[0]}')
+        try:
+            os.remove(f'Results/{r}.csv')
+        except:
+            pass
         db.commit()
 
         return redirect(url_for('Email',Email=Email))
@@ -169,6 +176,7 @@ def Next(Roll,Subject):
     E = rows.fetchall()
     l=len(E)
     QTaken = request.form.get("o")
+    db.execute('create table if not exists ":SubjectName"("Roll" smallint not null,"Right" smallint not null)',{"SubjectName":SubjectResult})
     if(QTaken==E[session[f"{Roll}"]][6]):
         try:
             i=1
@@ -189,7 +197,7 @@ def Next(Roll,Subject):
             rows = E[session[f"{Roll}"]]
         except:
             session.pop(f'{Roll}',None)
-            return("ok2")
+            return("<h1>Exam Done</h1>")
         return render_template("Paper.html",Subject=Subject,rows=rows,Roll=Roll,l=l,s=s)
 
 @app.route("/<string:Email>/<string:Subject>/SeeResult",methods=["POST","GET"])
