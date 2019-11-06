@@ -23,10 +23,6 @@ def index():
     E=rows.fetchall()
     return render_template("index.html",E=E)
 
-@app.route("/CreateAccount",methods=["Post","GET"])
-def Create_Account():
-    return render_template("CreateAccount.html")
-
 @app.route("/Registration",methods=["POST","GET"])
 def Registration():
     if(request.method == "POST"):
@@ -35,15 +31,13 @@ def Registration():
         Password = request.form.get("PASSWORD")
         if(Email == ""  or  Password == ""):
             return("<h2>Are stupid or what</h2>?")
-            #db.execute('create table Registration(Email text unique,Password text)')
-            #db.rollback()
-        #db.execute("insert into employee(name,address) values(:name,:address)" ,{"name":name,"address":address})
-        try:
-            db.execute("INSERT INTO Registration(Email,Password) VALUES(:Email,:Password)",{"Email":Email,"Password":Password})
-            db.commit()
-        except:
+            db.execute('create table Registration(Email text unique,Password text)')
             db.rollback()
-            return render_template("invalidU.html")
+        #db.execute("insert into employee(name,address) values(:name,:address)" ,{"name":name,"address":address})
+
+        db.execute("INSERT INTO Registration(Email,Password) VALUES(:Email,:Password)",{"Email":Email,"Password":Password})
+        db.commit()
+
         return redirect(url_for("Registration"))
     else:
         return render_template("index.html")
@@ -126,7 +120,6 @@ def uploader(Email):
                 except:
                     db.rollback()
             db.commit()
-            os.remove(f'UploadFiles/{FileName}')
         return redirect(url_for('Email',Email=Email))
     else:
         return render_template("index.html")
@@ -136,11 +129,14 @@ def delete(r):
     if('Email' in session):
         SubjectResult=f'{r}'+'Result'
         Email = session['Email']
-        db.execute("insert into ActiveSubject(Subject) values(:SubjectName)" ,{"SubjectName":r})
+        #db.execute("insert into ActiveSubject(Subject) values(:SubjectName)" ,{"SubjectName":r})
+        #rows = db.execute('select FileName  from "Exam" WHERE subjectname = (:subjectname)',{"subjectname":r})
+        #t=rows.fetchone()
         db.execute('DELETE FROM "Exam" WHERE subjectname = (:subjectname)',{"subjectname":r})
         db.execute('DELETE FROM "activesubject" WHERE "subject" =(:subjectname)',{"subjectname":r})
 
         try:
+            os.remove(f'UploadFiles/{t[0]}')
             os.remove(f'Results/{r}.csv')
         except:
             pass

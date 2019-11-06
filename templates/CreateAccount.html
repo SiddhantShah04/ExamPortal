@@ -35,6 +35,17 @@
                 width:10cm;
                 height:1.5cm;
             }
+                    #error1{
+            position:absolute;
+            font-size:15px;
+            color:red;
+            font-family: sans-serif;
+            position:absolute;
+            margin-top:2%;
+            margin-left:40%;
+        }
+
+
         </style>
     </head>
     <body style="background-color: #f1f1f1;">
@@ -42,7 +53,7 @@
         <header class="top">
             <span style="position:relative;top:10px;left:10px"><b>ExamSoft</b><prep>&nbsp;&nbsp; Rizvi College</span>
         </header>
-
+        <p id="error1">{% block p1 %} {% endblock %}</p>
         <form action="/Registration" method="POST" name="c">
             <fieldset style="width:40%;height:50%;margin-top:5%;margin-left:30%;">
                 <legend style="color:skyblue;font-size:25px">Create account zone</legend>
