@@ -139,12 +139,10 @@ def delete(r):
         db.execute("insert into ActiveSubject(Subject) values(:SubjectName)" ,{"SubjectName":r})
         db.execute('DELETE FROM "Exam" WHERE subjectname = (:subjectname)',{"subjectname":r})
         db.execute('DELETE FROM "activesubject" WHERE "subject" =(:subjectname)',{"subjectname":r})
-
         try:
             os.remove(f'Results/{r}.csv')
         except:
             pass
-
         db.execute('drop table ":subjectname"',{"subjectname":r})
         db.execute('drop table if exists ":SubjectResult"',{"SubjectResult":SubjectResult})
         db.commit()

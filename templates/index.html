@@ -108,6 +108,9 @@
           .small {
               display:none;
           }
+          .e{
+              display:block;
+          }
         }
         </style>
     </head>
@@ -115,7 +118,7 @@
 
 
         <header class="top">
-             <span style="position:relative;top:10px;left:10px"><b>ExamSoft</b><prep>&nbsp;&nbsp; Rizvi College</span>
+         <span style="position:relative;top:10px;left:10px"><b>ExamSoft</b><prep>&nbsp;&nbsp; Rizvi College</span>
         </header>
         <p id="error1">{% block p1 %} {% endblock %}</p>
         <form id="Students" action="/StudentZone" method="POST" name="Student">
@@ -157,6 +160,8 @@
                 <a href="/CreateAccount"><small>Create account</small></a>
             </div>
         </form>
-        <small class="small"> <span>a Siddhant shah productions<br>ExamSoft</span></div>
+        <small class="small"> <span>a Siddhant shah productions<br>ExamSoft</span>
+        <a href=""><small class="e" style="position:absolute;color:white;font-family: sans-serif;margin-left:42%;">See how its works</small></a>
+
     </body>
 </html>
