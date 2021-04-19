@@ -35,7 +35,7 @@ intervaltree==2.1.0
 isort==4.3.21
 itsdangerous==1.1.0
 jellyfish==0.7.2
-Jinja2==2.10.3
+Jinja2==2.11.3
 jmespath==0.9.4
 jsbeautifier==1.10.2
 kiwisolver==1.1.0
